@@ -21,7 +21,7 @@ import { renderer, scene } from './core/renderer'
 import './style.css'
 import { ThreeMFLoader } from 'three/examples/jsm/Addons.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { Kinematics } from './kinematics'
+import { Kinematics, Rot3Angles } from './kinematics'
 
 
 const loader = new GLTFLoader();
@@ -176,7 +176,11 @@ camera.setRotationFromEuler( new Euler(-Math.PI/2, Math.PI/3, 0));
 camera.updateMatrixWorld();
 controls.update();
 
-const loop = () => {
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const loop = async () => {
   const elapsedTime = clock.getElapsedTime()
 
   fpsGraph.begin()
@@ -194,7 +198,17 @@ const loop = () => {
 
     const fwd = bearKinematics.forwardKinematics(q, ID4);
     console.log(`fwd: ${JSON.stringify(fwd)}`);
-    
+    for (let effector in fwd) {
+      const m = fwd[effector];
+      console.log(effector,"x",m.elements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
+    }
+
+    const n = q['RJoint_Torso_XYZ_C'] as Rot3Angles;
+    n["x"] = n["x"] + 0.2;
+    q["RJoint_Torso_XYZ_C"] = n;
+    bearKinematics.map["RJoint_Back_Upper_XYZ_L"].rotation.z += 0.2;;
+    bearKinematics.updateState(q);
+    await sleep(100); 
   }
 
   fpsGraph.end()
