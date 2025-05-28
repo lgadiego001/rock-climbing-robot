@@ -202,7 +202,7 @@ const loop = async () => {
   printMatrix("ID4", ID4);
 
   if (bearKinematics) {
-    let q = bearKinematics.getCurrentState();
+    let q = bearKinematics.getCurrentStateConfig();
     console.log(`q: ${JSON.stringify(q)}`);
 
     const fwd = bearKinematics.forwardKinematics(q, ID4);
@@ -216,7 +216,7 @@ const loop = async () => {
     //n["x"] = n["x"] + 0.2;
     //q["RJoint_Torso_XYZ_C"] = n;
     bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
-    bearKinematics.updateState(q);
+    bearKinematics.setConfiguration(q);
     await sleep(100); 
   }
 
