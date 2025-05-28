@@ -180,6 +180,14 @@ async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+function printMatrix(name:string, m:Matrix4) {
+    console.log("Matrix", name);
+    for(let i = 0; i < 4; i++) {
+        console.log(m.elements[i+0*4].toFixed(2),m.elements[i+1*4].toFixed(2),m.elements[i+2*4].toFixed(2),m.elements[i+3*4].toFixed(2));
+    }
+    console.log("End of Matrix", name);
+}
+
 const loop = async () => {
   const elapsedTime = clock.getElapsedTime()
 
@@ -191,7 +199,8 @@ const loop = async () => {
 
   renderer.render(scene, camera)
   const ID4 = new Matrix4();
-    
+  printMatrix("ID4", ID4);
+
   if (bearKinematics) {
     let q = bearKinematics.getCurrentState();
     console.log(`q: ${JSON.stringify(q)}`);
@@ -203,10 +212,10 @@ const loop = async () => {
       console.log(effector,"x",m.elements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
     }
 
-    const n = q['RJoint_Torso_XYZ_C'] as Rot3Angles;
-    n["x"] = n["x"] + 0.2;
-    q["RJoint_Torso_XYZ_C"] = n;
-    bearKinematics.map["RJoint_Back_Upper_XYZ_L"].rotation.z += 0.2;;
+    //const n = q['RJoint_Torso_XYZ_C'] as Rot3Angles;
+    //n["x"] = n["x"] + 0.2;
+    //q["RJoint_Torso_XYZ_C"] = n;
+    bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
     bearKinematics.updateState(q);
     await sleep(100); 
   }

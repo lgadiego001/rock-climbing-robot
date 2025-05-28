@@ -14,16 +14,28 @@ interface NameChildMap {
 class Kinematics {
     root: Object3D;
     map: NameChildMap;
-    currentQ: JointAngles;
+    homePosition: JointAngles;
 
     constructor(root: Object3D) {
         this.root = root;
         this.map = this.getNameChildMap(this.root);
-        this.currentQ = this.getCurrentState();
+        this.homePosition = this.getCurrentState();
     };
 
     forwardKinematics(q: JointAngles, A: Matrix4) {
-        return calcForwardKinematics(q, A);
+        console.log(`forwardKinematics q: ${JSON.stringify(q)}`);
+        const dq = {}
+        for (let name in q) {
+            if (name.startsWith("RJoint_")) {
+                if (name.includes("_XYZ_")) {
+                    dq[name] = { "x": q[name]["x"] - this.homePosition[name]["x"], "y": q[name]["y"]  - this.homePosition[name]["y"], "z": q[name]["z"] + this.homePosition[name]["z"] };
+                } else if (name.includes("_Z_")) {
+                    dq[name] = q[name] - this.homePosition[name];
+                }
+            }
+        }
+
+        return calcForwardKinematics(dq, A);
     }
 
     inverseKinematics(q: JointAngles, AIn: Matrix4) {

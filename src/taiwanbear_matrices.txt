@@ -17,15 +17,15 @@ Matrix A_TaiwanBear
  0.00  0.00  0.00  1.00
 End of Matrix A_TaiwanBear
 Matrix M_RJoint_Back_Upper_XYZ_L
- 1.00  0.00  0.00  0.03
+ 1.00 -0.00  0.00  0.03
  0.00 -0.00  1.00  0.45
  0.00 -1.00 -0.00 -0.23
  0.00  0.00  0.00  1.00
 End of Matrix M_RJoint_Back_Upper_XYZ_L
 Matrix A_RJoint_Back_Upper_XYZ_L
- 0.00  0.00  1.00  0.45
+ 0.00 -0.00  1.00  0.45
  0.00  1.00  0.00  0.23
--1.00  0.00  0.00 -0.03
+-1.00 -0.00  0.00 -0.03
  0.00  0.00  0.00  1.00
 End of Matrix A_RJoint_Back_Upper_XYZ_L
 Matrix M_RJoint_Back_Lower_Z_L
@@ -36,7 +36,7 @@ Matrix M_RJoint_Back_Lower_Z_L
 End of Matrix M_RJoint_Back_Lower_Z_L
 Matrix A_RJoint_Back_Lower_Z_L
  0.00 -0.00  1.00  0.62
--0.00  1.00  0.00  0.24
+ 0.00  1.00  0.00  0.24
 -1.00 -0.00  0.00 -0.72
  0.00  0.00  0.00  1.00
 End of Matrix A_RJoint_Back_Lower_Z_L
@@ -54,7 +54,7 @@ Matrix A_RJoint_Back_Ankle_Z_L
 End of Matrix A_RJoint_Back_Ankle_Z_L
 Matrix M_Effector_Back_L
  0.00  0.00  1.00  0.24
- 0.00 -1.00  0.00 -0.13
+-0.00 -1.00  0.00 -0.13
  1.00 -0.00 -0.00 -0.00
  0.00  0.00  0.00  1.00
 End of Matrix M_Effector_Back_L
@@ -90,26 +90,26 @@ Matrix A_RJoint_Back_Lower_Z_R
 End of Matrix A_RJoint_Back_Lower_Z_R
 Matrix M_RJoint_Back_Ankle_Z_R
  1.00  0.00  0.00  0.63
- 0.00  1.00  0.00 -0.00
- 0.00 -0.00  1.00  0.00
+-0.00  1.00  0.00 -0.00
+-0.00 -0.00  1.00  0.00
  0.00  0.00  0.00  1.00
 End of Matrix M_RJoint_Back_Ankle_Z_R
 Matrix A_RJoint_Back_Ankle_Z_R
  0.00 -0.00 -1.00 -0.62
- 0.00 -1.00  0.00  0.24
+-0.00 -1.00  0.00  0.24
 -1.00 -0.00 -0.00 -1.35
  0.00  0.00  0.00  1.00
 End of Matrix A_RJoint_Back_Ankle_Z_R
 Matrix M_Effector_Back_R
--0.00 -0.00  1.00  0.24
--0.00 -1.00 -0.00  0.13
- 1.00 -0.00  0.00 -0.00
+ 0.00 -0.00  1.00  0.24
+ 0.00 -1.00 -0.00  0.13
+ 1.00  0.00 -0.00 -0.00
  0.00  0.00  0.00  1.00
 End of Matrix M_Effector_Back_R
 Matrix A_Effector_Back_R
--1.00  0.00 -0.00 -0.62
+-1.00  0.00  0.00 -0.62
  0.00  1.00  0.00  0.10
- 0.00  0.00 -1.00 -1.59
+-0.00  0.00 -1.00 -1.59
  0.00  0.00  0.00  1.00
 End of Matrix A_Effector_Back_R
 Matrix M_RJoint_Torso_XYZ_C
@@ -149,9 +149,9 @@ Matrix A_RJoint_Front_Lower_Z_L
  0.00  0.00  0.00  1.00
 End of Matrix A_RJoint_Front_Lower_Z_L
 Matrix M_RJoint_Front_Ankle_Z_L
- 1.00  0.00  0.00  0.55
+ 1.00 -0.00  0.00  0.55
 -0.00  1.00 -0.00 -0.01
- 0.00 -0.00  1.00 -0.00
+ 0.00  0.00  1.00 -0.00
  0.00  0.00  0.00  1.00
 End of Matrix M_RJoint_Front_Ankle_Z_L
 Matrix A_RJoint_Front_Ankle_Z_L
@@ -162,14 +162,14 @@ Matrix A_RJoint_Front_Ankle_Z_L
 End of Matrix A_RJoint_Front_Ankle_Z_L
 Matrix M_Effector_Front_L
  0.00  0.00  1.00  0.19
- 0.00 -1.00  0.00 -0.05
+-0.00 -1.00  0.00 -0.05
  1.00 -0.00 -0.00  0.01
  0.00  0.00  0.00  1.00
 End of Matrix M_Effector_Front_L
 Matrix A_Effector_Front_L
- 1.00  0.00 -0.00  0.51
- 0.00 -1.00  0.00 -1.60
--0.00 -0.00 -1.00 -1.60
+ 1.00 -0.00  0.00  0.51
+-0.00 -1.00  0.00 -1.60
+ 0.00 -0.00 -1.00 -1.60
  0.00  0.00  0.00  1.00
 End of Matrix A_Effector_Front_L
 Matrix M_RJoint_Front_Upper_XYZ_R
@@ -199,24 +199,24 @@ End of Matrix A_RJoint_Front_Lower_Z_R
 Matrix M_RJoint_Front_Ankle_Z_R
  1.00  0.00  0.00  0.55
  0.00  1.00 -0.00  0.01
- 0.00 -0.00  1.00 -0.00
+-0.00  0.00  1.00  0.00
  0.00  0.00  0.00  1.00
 End of Matrix M_RJoint_Front_Ankle_Z_R
 Matrix A_RJoint_Front_Ankle_Z_R
- 0.00  0.00 -1.00 -0.50
- 0.00 -1.00 -0.00 -1.55
--1.00  0.00 -0.00 -1.41
+ 0.00 -0.00 -1.00 -0.50
+-0.00 -1.00  0.00 -1.55
+-1.00 -0.00 -0.00 -1.41
  0.00  0.00  0.00  1.00
 End of Matrix A_RJoint_Front_Ankle_Z_R
 Matrix M_Effector_Front_R
 -0.00 -0.00  1.00  0.19
- 0.00 -1.00 -0.00  0.05
+-0.00 -1.00 -0.00  0.05
  1.00 -0.00  0.00  0.01
  0.00  0.00  0.00  1.00
 End of Matrix M_Effector_Front_R
 Matrix A_Effector_Front_R
--1.00 -0.00 -0.00 -0.51
--0.00  1.00  0.00 -1.60
+-1.00  0.00  0.00 -0.51
+ 0.00  1.00  0.00 -1.60
  0.00  0.00 -1.00 -1.60
  0.00  0.00  0.00  1.00
 End of Matrix A_Effector_Front_R
@@ -234,7 +234,7 @@ Matrix A_RJoint_Head_XYZ_C
 End of Matrix A_RJoint_Head_XYZ_C
 Matrix M_Effector_Head_C
 -0.00 -0.00  1.00  0.96
- 1.00 -0.00  0.00  0.00
+ 1.00 -0.00  0.00 -0.00
  0.00  1.00  0.00 -0.45
  0.00  0.00  0.00  1.00
 End of Matrix M_Effector_Head_C
