@@ -18,7 +18,6 @@ function printMatrix(name:string, m:Matrix4) {
     console.log("End of Matrix", name);
 }
 
-
 /**
  * Calculate forward kinematics.
  *
@@ -38,11 +37,11 @@ function calcForwardKinematics(
         A = AIn;
     }
     
-    q = {
-    //   "RJoint_Back_Upper_XYZ_L": {"x": 0.0/180.0*Math.PI, "y": 0.0/180.0*Math.PI, "z": 0.0/180.0*Math.PI },
-    //   "RJoint_Back_Lower_Z_L": 20.0/180.0*Math.PI,
-    //   "RJoint_Back_Ankle_Z_L": 30.0/180.0*Math.PI,
-    }
+    // q = {
+    // //   "RJoint_Back_Upper_XYZ_L": {"x": 0.0/180.0*Math.PI, "y": 0.0/180.0*Math.PI, "z": 0.0/180.0*Math.PI },
+    // //   "RJoint_Back_Lower_Z_L": 20.0/180.0*Math.PI,
+    // //   "RJoint_Back_Ankle_Z_L": 30.0/180.0*Math.PI,
+    // }
 
     var linkTransformations: LinkTransformations = {};
 

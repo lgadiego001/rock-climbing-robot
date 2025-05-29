@@ -202,7 +202,7 @@ const loop = async () => {
   printMatrix("ID4", ID4);
 
   if (bearKinematics) {
-    let q = bearKinematics.getCurrentStateConfig();
+    let q = bearKinematics.vectorToConfig( new Array(bearKinematics.qConfigLength).fill(0) );
     console.log(`q: ${JSON.stringify(q)}`);
 
     const fwd = bearKinematics.forwardKinematics(q, ID4);
@@ -215,8 +215,16 @@ const loop = async () => {
     //const n = q['RJoint_Torso_XYZ_C'] as Rot3Angles;
     //n["x"] = n["x"] + 0.2;
     //q["RJoint_Torso_XYZ_C"] = n;
-    bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
-    bearKinematics.setConfiguration(q);
+    
+    //bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
+    //bearKinematics.setConfiguration(q);
+    const joint = "Effector_Front_L";
+    const me = fwd["Effector_Front_L"].elements;
+    const pos = new Vector3( me[0+3*4], me[1+3*4], me[2+3*4] );
+
+    const [newConfig, _] = bearKinematics.inverseKinematics(q, joint, new Vector3(pos.x + 0.3, pos.y + 0.3, pos.z + 0.3), ID4, 0.3);
+    bearKinematics.setConfiguration(newConfig);
+
     await sleep(100); 
   }
 

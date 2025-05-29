@@ -11,6 +11,8 @@ interface NameChildMap {
     [key: string]: Object3D;
 }
 
+type LinkTransformations = { [id:string] : Matrix4 };
+
 function sortObjectKeys<T extends Record<string, any>>(obj: T): T {
     return Object.keys(obj)
       .sort()
@@ -73,73 +75,76 @@ class Kinematics {
         return [qConfigIndex, qConfigIndexReversed];
     }
 
-    forwardKinematics(q: JointAngles, A: Matrix4) {
+    forwardKinematics(q: JointAngles, A: Matrix4) : LinkTransformations {
+
         console.log(`forwardKinematics q: ${JSON.stringify(q)}`);
-        const dq = q;
+        const q2 = q;
 
-        // for (let name in q) {
-        //     if (name.startsWith("RJoint_")) {
-        //         if (name.includes("_XYZ_")) {
-        //             dq[name] = { "x": q[name]["x"] - this.homePosition[name]["x"], "y": q[name]["y"]  - this.homePosition[name]["y"], "z": q[name]["z"] + this.homePosition[name]["z"] };
-        //         } else if (name.includes("_Z_")) {
-        //             dq[name] = q[name] - this.homePosition[name];
-        //         }
-        //     }
-        // }
-
-        return calcForwardKinematics(dq, A);
+        return calcForwardKinematics(q2, A);
     }
 
     qConfigStringToIndex(label: string) {
         return this.qConfigIndex[label];
     }
 
-    qConfigToVector(q:JointAngles) {
-        const vector : number[] = new Array(this.qConfigLength).fill(-1000);
-
-        for(let joint in q) {
-            let qc = q[joint];
-            if (isDictionary(qc)) {
-                vector[this.qConfigIndex[joint + "/" + "x"]] = qc["x"];
-                vector[this.qConfigIndex[joint + "/" + "y"]] = qc["y"];
-                vector[this.qConfigIndex[joint + "/" + "z"]] = qc["z"];
-            } else {
-                vector[this.qConfigIndex[joint]] = qc;
-            }
-        }
-
-        return vector;
-    }
-
-    calcJacobian(joint: string, q : JointAngles, dq : number, A : Matrix4 ) {
-        const fwd1 = this.forwardKinematics(q,A);
-        const m = fwd1[joint];
-        const pos = new Vector3(m.elements[3*4 + 0], m.elements[3*4 + 1], m.elements[3*4 + 2]);
+    calcJacobian(q : JointAngles, joint: string, pos: Vector3, dq : number, A : Matrix4 ) {
         const cVec = this.configToVector(q);
+        const jac : Array<Vector3> = new Array<Vector3>();
 
         for(let i = 0; i < this.qConfigLength; i++) {
             const vec = [ ...cVec ];
             vec[i] = vec[i] + dq;
-            const q2 = VectorToConfig(vec);
-            const fwd2 = this.forwardKinematics(q,A);
-            const m2 = fwd1[joint];
-            const pos2 = new Vector3(m2.elements[3*4 + 0], m2.elements[3*4 + 1], m2.elements[3*4 + 2]);        
+            const q2 = this.vectorToConfig(vec);
+            const fwd2 = this.forwardKinematics(q2,A);
+            const m2 = fwd2[joint];
+            const pos2 = this.getPosition(m2);
+            
+            const diff = pos2.sub(pos);
+            const partDeriv = diff.divideScalar(dq)
+            
+            jac.push(partDeriv);
         }
+
+        return jac;
     }
 
-    inverseKinematics(link: string, target : Vector3, 
+    getPosition( m : Matrix4 ) {
+        const me = m.elements;
+
+        return new Vector3(me[0+3*4], me[1+3*4], me[2+3*4]);
+    }
+
+    inverseKinematics(q: JointAngles, joint: string, target : Vector3, 
             A: Matrix4, 
             alpha : number = 0.5, 
             limit : number = 0.01,
-            maxIterations : number = 50) {
-        const dErr = new Vector3(1000,1000,1000);
+            maxIterations : number = 100) {
+        var dErr = new Vector3(1000,1000,1000);
+        const dq = 0.1;
         let count = 0;
+        const nConfig = {};
+        const vec = this.configToVector(q);
 
         while( ( dErr.lengthSq() >= limit ) && (count++ < maxIterations)) {
-            const jac = this.calcJacobian(q,A);
+            console.log(`dErr ${dErr.lengthSq()}`);
+            const q2 = this.vectorToConfig(vec)
+            const fwd2 = this.forwardKinematics(q2, A);
+            
+            const pos = this.getPosition( fwd2[joint] );
+            dErr = new Vector3( target.x - pos.x, target.y - pos.y, target.z - pos.z);
 
+            const jac = this.calcJacobian(q2, joint, pos, dq, A);
+            console.log("Jacobian", JSON.stringify(jac));
+
+            for(let i = 0; i < this.qConfigLength; i++) {
+                const jj = jac[i];
+                const delta = jj.x * dErr.x + jj.y * dErr.y + jj.z * dErr.z;
+                if (delta != 0.0) {
+                    vec[i] = vec[i] + alpha * delta; 
+                }
+            }
         }
-        return [0,dErr];
+        return [this.vectorToConfig(vec),dErr];
     }
 
     getNameChildMap(obj: Object3D): NameChildMap {
@@ -194,7 +199,10 @@ class Kinematics {
                 q[jLabel] = vec[i];
             }
         }
+        return q;
     }
+
+
     getCurrentStateVector() {
         return this.configToVector(this.getCurrentStateConfig());
     }
@@ -220,25 +228,10 @@ class Kinematics {
         return q;
     }
 
-    updateJointZ(child: Object3D, val: number) {
-        child.rotation.z = val;
-    }
-
-    updateJointXYZ(child: Object3D, val: Rot3Angles) {
-        child.rotation.x = val["x"];
-        child.rotation.y = val["y"];
-        child.rotation.z = val["z"];       
-    }
-
     setConfiguration(q : JointAngles) {
-        for(let joint in q) {
-            if (joint.includes("_Z_")) {
-                this.updateJointZ(this.map[joint], q[joint]);
-            } else if (joint.includes("_XYZ_")) {
 
-            }
-        }
     }
+
 }
 
 export { Kinematics };
