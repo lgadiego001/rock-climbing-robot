@@ -36,6 +36,11 @@ class Kinematics {
 
     constructor(root: Object3D) {
         this.root = root;
+
+        this.root.translateX(-1);
+        this.root.translateZ(4);
+        this.root.rotateX(Math.PI);
+
         this.map = sortObjectKeys(this.getNameChildMap(this.root));
         const [ind, indRev ] = this.calcQConfigIndex(this.map);
         this.qConfigIndex = ind; 
@@ -122,11 +127,10 @@ class Kinematics {
         var dErr = new Vector3(1000,1000,1000);
         const dq = 0.1;
         let count = 0;
-        const nConfig = {};
         const vec = this.configToVector(q);
 
         while( ( dErr.lengthSq() >= limit ) && (count++ < maxIterations)) {
-            console.log(`dErr ${dErr.lengthSq()}`);
+            console.log(`count ${count}, dErr ${dErr.lengthSq()}`);
             const q2 = this.vectorToConfig(vec)
             const fwd2 = this.forwardKinematics(q2, A);
             
@@ -229,7 +233,21 @@ class Kinematics {
     }
 
     setConfiguration(q : JointAngles) {
+        for(let joint in q) {
+            const child = this.map[joint];
+            const qc = q[joint];
 
+            if (isDictionary(qc)) {
+                const qh = this.homePositionConfig[joint] as Rot3Angles;
+                //child.rotation.set( qh["x"] - qc["x"], qh["y"] - qc["y"], qh["z"] - qc["z"], "XYZ");
+                child.rotation.set( qc["x"], qc["y"], qc["z"], "XYZ");
+                
+            } else {
+                const qh = this.homePositionConfig[joint] as number;
+                //child.rotation.set( child.rotation.x, child.rotation.y, qh - qc, "XYZ");
+                child.rotation.set( child.rotation.x, child.rotation.y, qc as number, "XYZ");
+            }
+        }
     }
 
 }

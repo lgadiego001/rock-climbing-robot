@@ -21,7 +21,7 @@ import { renderer, scene } from './core/renderer'
 import './style.css'
 import { ThreeMFLoader } from 'three/examples/jsm/Addons.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { Kinematics, Rot3Angles } from './kinematics'
+import { JointAngles, Kinematics, Rot3Angles } from './kinematics'
 
 
 const loader = new GLTFLoader();
@@ -38,6 +38,8 @@ directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(0.25, 2, 2.25)
 
 scene.add(directionalLight)
+
+const holds : Object3D[] = [];
 
 loader.load("./assets/climbing holds.glb", (gltf) => {
   const wall = gltf.scene.children[0];  // sword 3D object is loaded
@@ -58,29 +60,43 @@ loader.load("./assets/climbing holds.glb", (gltf) => {
   } 
 
   const jug1Center = getObject("Jug1Center");
+  jug1Center?.scale.set(0.004,0.004,0.004);
   jug1Center?.setRotationFromEuler(new Euler(90.0/180.0*Math.PI, 0.0/180.0*Math.PI, 0.0/180.0*Math.PI));
-  scene.add(jug1Center!);
+  //scene.add(jug1Center!);
 
   const jug1Left = getObject("Jug1Left");
   jug1Left?.setRotationFromEuler(new Euler(90.0/180.0*Math.PI, 45.0/180.0*Math.PI, 0.0/180.0*Math.PI));
-  scene.add(jug1Left!);
+  //scene.add(jug1Left!);
 
   const jug1Right = getObject("Jug1Right");
   jug1Right?.setRotationFromEuler(new Euler(90.0/180.0*Math.PI, -45.0/180.0*Math.PI, 0.0/180.0*Math.PI));
-  scene.add(jug1Right!);
+  //scene.add(jug1Right!);
 
-  for(var i = 0; i < 10; i++ ) {
-    const cp = jug1Center!!.clone();
-    cp.translateX(0.2 * i);
-    scene.add(cp);
+  // for(let i = 0; i < 10; i++ ) {
+  //   const cp = jug1Center!!.clone();
+  //   cp.translateX(0.4 * i);
+  //   scene.add(cp);
+  // }
+  
+  for(let i = 0; i < 10; i++) {
+    for(let j = 0; j < 2; j++) {
+      const jug = jug1Center!!.clone();
+      jug.name = `Jug_ladder_${i}_${j}`;
+      jug.translateX((j-0.5) * 2 * 0.7);
+      jug.translateY(0);
+      jug.translateZ(5 - i * 1.5);
+      scene.add(jug);
+
+      holds.push(jug);
+    }
   }
   
+  
+
   console.log(`center ${jug1Center} left ${jug1Left} right ${jug1Right}`);
   // import fragmentShader from '/@/shaders/fragment.glsl'
   // // Shaders
   // import vertexShader from '/@/shaders/vertex.glsl'
-
-
 
   // const sphereMaterial = new ShaderMaterial({
   //   uniforms: {
@@ -109,9 +125,9 @@ loader.load("./assets/climbing holds.glb", (gltf) => {
 var bear = null;
 var bearKinematics : Kinematics | null = null;
 
-
 loader.load("./assets/taiwan bear.glb", (gltf) => {
   bear = gltf.scene.children[0];
+  bear.translateZ(0.5);
   scene.add(bear);
   bearKinematics = new Kinematics(bear);
 
@@ -188,6 +204,62 @@ function printMatrix(name:string, m:Matrix4) {
     console.log("End of Matrix", name);
 }
 
+function findClosestHold(pos : Vector3, holds: Object3D[] ) {
+  var min = 1000000;
+  var minHold : Object3D = holds[0];
+
+  for(let h of holds) {
+    const hPos = h.position;
+    const dist = pos.distanceToSquared(hPos);
+
+    console.log(pos.x, pos.y, pos.z, '<->', hPos.x, hPos.y, hPos.z, 'dist', dist);
+    if (dist < min ) {
+      min = dist;
+      minHold = h;
+    }
+  }
+  return minHold;
+}
+
+function initialPosition( bearKinematics: Kinematics, holds: Object3D[] ) {
+  const q = bearKinematics.getCurrentStateConfig();
+  const origin = bearKinematics.root.matrixWorld;
+  const fwd = bearKinematics.forwardKinematics(q, origin);
+  console.log(`initialPosition: current ${JSON.stringify(q)}\n\nkin ${JSON.stringify(fwd)}`);
+  var init = false;
+
+  if ( holds.length > 0 ) {
+    for(let eff of ["Effector_Back_R"]) {
+      const m = fwd[eff];
+      const current = new Vector3(m.elements[0 + 3*4], m.elements[1+3*4], m.elements[2+3*4]);
+
+      console.log(`${eff} ${JSON.stringify(current)}`);
+
+      const h = findClosestHold(current, holds);
+      const dist = current.distanceToSquared(h.position);
+      //console.log(`closest hold for ${eff} ${JSON.stringify(current)} ${h.name} ${JSON.stringify(h.position)} dist ${dist}`);
+
+      const [newConfig, _] = bearKinematics.inverseKinematics(q, eff, h.position, origin, 0.3);
+      console.log('newConfig', JSON.stringify(newConfig));
+      
+      // const fwd2 = bearKinematics.forwardKinematics(newConfig as JointAngles, origin);
+      // const mAfter = fwd2[eff];
+      // const currentAfter = new Vector3(mAfter.elements[0 + 3*4], mAfter.elements[1+3*4], mAfter.elements[2+3*4]);
+      // const distAfter = currentAfter.distanceToSquared(h.position);
+      // console.log(`after ik closest hold for ${eff} ${JSON.stringify(currentAfter)} ${h.name} ${JSON.stringify(h.position)} dist ${distAfter}`);
+
+      
+      bearKinematics.setConfiguration(newConfig as JointAngles);
+
+      init = true;
+    }
+  }
+
+  return init;
+}
+
+var initialized = false;
+
 const loop = async () => {
   const elapsedTime = clock.getElapsedTime()
 
@@ -198,32 +270,46 @@ const loop = async () => {
   // cube.rotation.z += 5.0 / 180.0 * Math.PI
 
   renderer.render(scene, camera)
-  const ID4 = new Matrix4();
-  printMatrix("ID4", ID4);
+
 
   if (bearKinematics) {
-    let q = bearKinematics.vectorToConfig( new Array(bearKinematics.qConfigLength).fill(0) );
-    console.log(`q: ${JSON.stringify(q)}`);
-
-    const fwd = bearKinematics.forwardKinematics(q, ID4);
-    console.log(`fwd: ${JSON.stringify(fwd)}`);
-    for (let effector in fwd) {
-      const m = fwd[effector];
-      console.log(effector,"x",m.elements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
+    //const origin : Matrix4 = bearKinematics.root.matrixWorld;
+    
+    if (! initialized) {
+      initialized = initialPosition(bearKinematics, holds);
     }
 
-    //const n = q['RJoint_Torso_XYZ_C'] as Rot3Angles;
-    //n["x"] = n["x"] + 0.2;
-    //q["RJoint_Torso_XYZ_C"] = n;
+    let q = bearKinematics.getCurrentStateConfig();
+    console.log(`q: ${JSON.stringify(q)}`);
     
-    //bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
-    //bearKinematics.setConfiguration(q);
-    const joint = "Effector_Front_L";
-    const me = fwd["Effector_Front_L"].elements;
-    const pos = new Vector3( me[0+3*4], me[1+3*4], me[2+3*4] );
+    // const fwd = bearKinematics.forwardKinematics(q, origin);
+    // console.log(`fwd: ${JSON.stringify(fwd)}`);
+    // for (let effector in fwd) {
+    //   const m = fwd[effector];
+    //   console.log(effector,"x",m.elements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
+    // }
+  
+    const n = q['RJoint_Torso_XYZ_C'] as Rot3Angles;
+    n["z"] = n["z"] + 0.2;
+    q["RJoint_Torso_XYZ_C"] = n;
+    
+  // bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
+  
+    bearKinematics.setConfiguration(q);
 
-    const [newConfig, _] = bearKinematics.inverseKinematics(q, joint, new Vector3(pos.x + 0.3, pos.y + 0.3, pos.z + 0.3), ID4, 0.3);
-    bearKinematics.setConfiguration(newConfig);
+  
+    //const joint = "Effector_Front_R";
+    //const me = fwd["Effector_Front_R"].elements;
+    //const pos = new Vector3( me[0+3*4], me[1+3*4], me[2+3*4] );
+
+    // if (holds.length > 0) {
+    //   const target = new Vector3();
+    //   holds[0].getWorldPosition(target);
+
+    //   const [newConfig, _] = bearKinematics.inverseKinematics(q, joint, target, origin, 0.3);
+    //   console.log('newConfig', JSON.stringify(newConfig));
+    //   bearKinematics.setConfiguration(newConfig as JointAngles);
+    // }
 
     await sleep(100); 
   }
