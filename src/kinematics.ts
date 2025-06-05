@@ -81,8 +81,7 @@ class Kinematics {
     }
 
     forwardKinematics(q: JointAngles, A: Matrix4) : LinkTransformations {
-
-        console.log(`forwardKinematics q: ${JSON.stringify(q)}`);
+        //console.log(`forwardKinematics q: ${JSON.stringify(q)}`);
         const q2 = q;
 
         return calcForwardKinematics(q2, A);
@@ -123,22 +122,24 @@ class Kinematics {
             A: Matrix4, 
             alpha : number = 0.5, 
             limit : number = 0.01,
-            maxIterations : number = 100) {
+            maxIterations : number = 100) : [ JointAngles, Vector3, number, LinkTransformations ] {
         var dErr = new Vector3(1000,1000,1000);
         const dq = 0.1;
         let count = 0;
         const vec = this.configToVector(q);
-
+        const q3 = this.vectorToConfig(vec)
+        let fwd2 = this.forwardKinematics(q3, A);
+            
         while( ( dErr.lengthSq() >= limit ) && (count++ < maxIterations)) {
-            console.log(`count ${count}, dErr ${dErr.lengthSq()}`);
+            // console.log(`count ${count}, dErr ${dErr.lengthSq()}`);
             const q2 = this.vectorToConfig(vec)
-            const fwd2 = this.forwardKinematics(q2, A);
+            fwd2 = this.forwardKinematics(q2, A);
             
             const pos = this.getPosition( fwd2[joint] );
             dErr = new Vector3( target.x - pos.x, target.y - pos.y, target.z - pos.z);
 
             const jac = this.calcJacobian(q2, joint, pos, dq, A);
-            console.log("Jacobian", JSON.stringify(jac));
+            //console.log("Jacobian", JSON.stringify(jac));
 
             for(let i = 0; i < this.qConfigLength; i++) {
                 const jj = jac[i];
@@ -148,7 +149,8 @@ class Kinematics {
                 }
             }
         }
-        return [this.vectorToConfig(vec),dErr];
+
+        return [this.vectorToConfig(vec),dErr, count, fwd2 ];
     }
 
     getNameChildMap(obj: Object3D): NameChildMap {
