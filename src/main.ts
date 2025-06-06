@@ -83,8 +83,8 @@ loader.load("./assets/climbing holds.glb", (gltf) => {
       const jug = jug1Center!!.clone();
       jug.name = `Jug_ladder_${i}_${j}`;
       jug.translateX((j-0.5) * 2 * 0.7);
-      jug.translateY(5 - i * 1.5);
-      jug.translateZ(0);
+      jug.translateY(0);
+      jug.translateZ(5 - i * 1.5);
       scene.add(jug);
 
       holds.push(jug);
@@ -127,12 +127,24 @@ var bearKinematics : Kinematics | null = null;
 
 loader.load("./assets/taiwan bear.glb", (gltf) => {
   bear = gltf.scene.children[0];
-  bear.translateZ(1.0);
+  //bear.translateZ(1.0);
   scene.add(bear);
   bearKinematics = new Kinematics(bear);
+  // Set the directions for turns
+
+  {
+    const q = bearKinematics.getCurrentStateConfig();
+    q["RJoint_Back_Lower_Z_L"] = q["RJoint_Back_Lower_Z_L"] + Math.PI/8;
+    q["RJoint_Back_Lower_Z_R"] = q["RJoint_Back_Lower_Z_R"] - Math.PI/8;
+    q["RJoint_Front_Lower_Z_L"] = q["RJoint_Front_Lower_Z_L"] - Math.PI/8;
+    q["RJoint_Front_Lower_Z_R"] = q["RJoint_Front_Lower_Z_R"] + Math.PI/8;
+    
+    bearKinematics.setConfiguration(q);  
+  }
 
   // const JointFolder = gui.addFolder({
   //   title:"Joint Control"
+  
   // })
 
   // let joints : Array<Object3D> = [bear];
@@ -254,7 +266,7 @@ function initialPosition( bearKinematics: Kinematics, holds: Object3D[] ) {
   var init = false;
 
   if ( holds.length > 0 ) {
-    for(let eff of ["Effector_Back_R", "Effector_Back_L" ]) { //"Effector_Front_R", "Effector_Front_L"]) {
+    for(let eff of ["Effector_Back_R", "Effector_Back_L", "Effector_Front_R" ]) { //"Effector_Front_R", "Effector_Front_L"]) {
       const q = bearKinematics.getCurrentStateConfig();
       const origin = bearKinematics.root.matrixWorld;
       const fwd = bearKinematics.forwardKinematics(q, origin);
@@ -312,6 +324,7 @@ const loop = async () => {
     }
 
     let q = bearKinematics.getCurrentStateConfig();
+     
     console.log(`q: ${JSON.stringify(q)}`);
     
     // const fwd = bearKinematics.forwardKinematics(q, origin);
