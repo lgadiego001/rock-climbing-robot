@@ -11,17 +11,19 @@ import {
   Matrix4, 
   Euler,
   Object3D,
-} from 'three'
+} from 'three';
 
-import camera from './core/camera'
-import { fpsGraph, gui } from './core/gui'
-import { controls } from './core/orbit-control'
-import { renderer, scene } from './core/renderer'
+import camera from './core/camera';
+import { fpsGraph, gui } from './core/gui';
+import { controls } from './core/orbit-control';
+import { renderer, scene } from './core/renderer';
 
-import './style.css'
-import { ThreeMFLoader } from 'three/examples/jsm/Addons.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { LinkTransformations, JointAngles, Kinematics, Rot3Angles } from './kinematics'
+import './style.css';
+import { ThreeMFLoader } from 'three/examples/jsm/Addons.js';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { LinkTransformations, JointAngles, Kinematics, Rot3Angles } from './kinematics';
+import { setupWall } from './wall';
+import { update } from 'three/examples/jsm/libs/tween.module.js';
 
 
 const loader = new GLTFLoader();
@@ -39,103 +41,30 @@ directionalLight.position.set(0.25, 2, 2.25)
 
 scene.add(directionalLight)
 
-const holds : Object3D[] = [];
-
-loader.load("./assets/climbing holds.glb", (gltf) => {
-  const wall = gltf.scene.children[0];  // sword 3D object is loaded
-  //holds.translateZ(-1);
-  //wall.scale.set(3,5,1);
-  //wall.position.set(0,0,-0.1)
-  scene.add(wall);
-
-  const getObject = (name:string) => {
-    var obj : Object3D | null = null;
-    for( const it of gltf.scene.children ) {
-      if(it.name == name) {
-        obj = it;
-        break
-      }
-    }
-    return obj;
-  } 
-
-  const jug1Center = getObject("Jug1Center");
-  //jug1Center?.scale.set(0.004,0.004,0.004);
-  //jug1Center?.setRotationFromEuler(new Euler(90.0/180.0*Math.PI, 0.0/180.0*Math.PI, 0.0/180.0*Math.PI));
-  scene.add(jug1Center!);
-
-  const jug1Left = getObject("Jug1Left");
-  //jug1Left?.setRotationFromEuler(new Euler(90.0/180.0*Math.PI, 45.0/180.0*Math.PI, 0.0/180.0*Math.PI));
-  scene.add(jug1Left!);
-
-  const jug1Right = getObject("Jug1Right");
-  //jug1Right?.setRotationFromEuler(new Euler(90.0/180.0*Math.PI, -45.0/180.0*Math.PI, 0.0/180.0*Math.PI));
-  scene.add(jug1Right!);
-
-  // for(let i = 0; i < 10; i++ ) {
-  //   const cp = jug1Center!!.clone();
-  //   cp.translateX(0.4 * i);
-  //   scene.add(cp);
-  // }
-  
-  for(let i = 0; i < 10; i++) {
-    for(let j = 0; j < 2; j++) {
-      const jug = jug1Center!!.clone();
-      jug.name = `Jug_ladder_${i}_${j}`;
-      jug.translateX((j-0.5) * 2 * 0.7);
-      jug.translateY(0);
-      jug.translateZ(5 - i * 1.5);
-      scene.add(jug);
-
-      holds.push(jug);
-    }
-  }
-  
-  
-
-  console.log(`center ${jug1Center} left ${jug1Left} right ${jug1Right}`);
-  // import fragmentShader from '/@/shaders/fragment.glsl'
-  // // Shaders
-  // import vertexShader from '/@/shaders/vertex.glsl'
-
-  // const sphereMaterial = new ShaderMaterial({
-  //   uniforms: {
-  //     uTime: { value: 0 },
-  //     uFrequency: { value: new Vector2(20, 15) },
-  //   },
-  //   vertexShader,
-  //   fragmentShader,
-  // })
-
-  // const sphere = new Mesh(
-  //   new SphereGeometry(1, 32, 32),
-  //   sphereMaterial,
-  // )
-
-  // sphere.position.set(0, 2, 0)
-  // sphere.castShadow = true
-  // scene.add(sphere)
-
-  // const geometry = new THREE.BoxGeometry(1, 0.2, 2);
-  // const material = new THREE.MeshBasicMaterial({ color: 0xa02030 });
-  // const cube = new THREE.Mesh(geometry, material);
-  // scene.add(cube);
-});
+const [wall,holds] = await setupWall("./assets/climbing holds.glb", "/route1.txt", 1.0, 1.5);
+scene.add(wall);
 
 var bear = null;
 var bearKinematics : Kinematics | null = null;
 
+
 loader.load("./assets/taiwan bear.glb", (gltf) => {
   bear = gltf.scene.children[0];
-  //bear.translateZ(1.0);
-  scene.add(bear);
+  {
+    //bear.position.set(0,-4,2);
+    //bear.rotateX(Math.PI);
+  }
+
+  bear.updateMatrixWorld();
   bearKinematics = new Kinematics(bear);
+  scene.add(bear);
+
   // Set the directions for turns
 
   {
     const q = bearKinematics.getCurrentStateConfig();
-    q["RJoint_Back_Lower_Z_L"] = q["RJoint_Back_Lower_Z_L"] + Math.PI/8;
-    q["RJoint_Back_Lower_Z_R"] = q["RJoint_Back_Lower_Z_R"] - Math.PI/8;
+    q["RJoint_Back_Lower_Z_L"] = q["RJoint_Back_Lower_Z_L"] + Math.PI/4;
+    q["RJoint_Back_Lower_Z_R"] = q["RJoint_Back_Lower_Z_R"] - Math.PI/4;
     q["RJoint_Front_Lower_Z_L"] = q["RJoint_Front_Lower_Z_L"] - Math.PI/8;
     q["RJoint_Front_Lower_Z_R"] = q["RJoint_Front_Lower_Z_R"] + Math.PI/8;
     
@@ -197,12 +126,15 @@ Object.keys(directionalLight.position).forEach((key) => {
   // plane.receiveShadow = true
   // scene.add(plane)
 
-const clock = new Clock()
-
-//camera.position = new Vector3(0.00, 2.6, -1);
-camera.setRotationFromEuler( new Euler(-Math.PI/2, Math.PI/3, 0));
+camera.position.set(0,0,20);
+camera.lookAt(new Vector3(0, 0, 0));
+camera.up.set(0, -1, 0); // Set the up direction to Y axis
 camera.updateMatrixWorld();
+
+camera.updateProjectionMatrix();
 controls.update();
+
+const clock = new Clock()
 
 async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -227,12 +159,10 @@ function printQConfig( name: string, q: JointAngles ) {
 }
 
 function printKinematics( name: string, fwd: LinkTransformations ) {
-  console.log("Configuration"), name;
+  console.log("Configuration", name);
   for(let joint in fwd) {
-    if( joint.startsWith("Effector_")) {
-      const j = fwd[joint];
-      console.log(joint, "x", j.elements[0+3*4].toFixed(2), "y", j.elements[1+3*4].toFixed(2), "z", j.elements[2+3*4].toFixed(2) );
-    }
+    const j = fwd[joint];
+    console.log(joint, "x", j.elements[0+3*4].toFixed(2), "y", j.elements[1+3*4].toFixed(2), "z", j.elements[2+3*4].toFixed(2) );
   }
 }
 
@@ -266,11 +196,12 @@ function initialPosition( bearKinematics: Kinematics, holds: Object3D[] ) {
   var init = false;
 
   if ( holds.length > 0 ) {
-    for(let eff of ["Effector_Back_R", "Effector_Back_L", "Effector_Front_R" ]) { //"Effector_Front_R", "Effector_Front_L"]) {
+    for(let eff of ["Effector_Back_R" ]) { //"Effector_Front_R", "Effector_Front_L"]) {
       const q = bearKinematics.getCurrentStateConfig();
       const origin = bearKinematics.root.matrixWorld;
       const fwd = bearKinematics.forwardKinematics(q, origin);
-      console.log(`initialPosition: current ${JSON.stringify(q)}\n\nkin ${JSON.stringify(fwd)}`);
+      printKinematics('old Kin', fwd);
+      //console.log(`initialPosition: current ${JSON.stringify(q)}\n\nkin ${JSON.stringify(fwd)}`);
   
       const m = fwd[eff];
       const current = new Vector3(m.elements[0 + 3*4], m.elements[1+3*4], m.elements[2+3*4]);
@@ -278,6 +209,9 @@ function initialPosition( bearKinematics: Kinematics, holds: Object3D[] ) {
       console.log(`${eff} ${JSON.stringify(current)}`);
 
       const h = findClosestHold(current, holds);
+      h.position.set(-current.x + 0.5,current.y,current.z);
+      h.updateMatrixWorld();      
+
       const dist = current.distanceToSquared(h.position);
       console.log(`closest hold for ${eff} ${JSON.stringify(current)} ${h.name} ${JSON.stringify(h.position)} dist ${dist}`);
 
@@ -309,11 +243,8 @@ const loop = async () => {
 
   fpsGraph.begin()
 
-  controls.update()
-  // cube.rotation.x += 1.0 / 180.0 * Math.PI
-  // cube.rotation.z += 5.0 / 180.0 * Math.PI
-
-  renderer.render(scene, camera)
+  //controls.update();
+  renderer.render(scene, camera);
 
 
   if (bearKinematics) {
@@ -331,7 +262,7 @@ const loop = async () => {
     // console.log(`fwd: ${JSON.stringify(fwd)}`);
     // for (let effector in fwd) {
     //   const m = fwd[effector];
-    //   console.log(effector,"x",m.elements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
+    //   console.log(effector,"x",m.slements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
     // }
   
     {

@@ -36,11 +36,7 @@ class Kinematics {
 
     constructor(root: Object3D) {
         this.root = root;
-
-        this.root.translateX(-1);
-        this.root.translateZ(4);
-        this.root.rotateX(Math.PI);
-
+        
         this.map = sortObjectKeys(this.getNameChildMap(this.root));
         const [ind, indRev ] = this.calcQConfigIndex(this.map);
         this.qConfigIndex = ind; 
@@ -121,7 +117,7 @@ class Kinematics {
     inverseKinematics(q: JointAngles, joint: string, target : Vector3, 
             A: Matrix4, 
             alpha : number = 0.5, 
-            limit : number = 0.01,
+            limit : number = 0.0001,
             maxIterations : number = 100) : [ JointAngles, Vector3, number, LinkTransformations ] {
         var dErr = new Vector3(1000,1000,1000);
         const dq = 0.1;
@@ -249,7 +245,7 @@ class Kinematics {
                 //child.rotation.set( child.rotation.x, child.rotation.y, qh - qc, "XYZ");
                 child.rotation.set( child.rotation.x, child.rotation.y, qc as number, "XYZ");
             }
-        }
+            child.updateMatrixWorld();        }
     }
 
 }
