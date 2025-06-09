@@ -48,8 +48,8 @@ let bearKinematics: Kinematics | null = null
 loader.load('./assets/taiwan bear.glb', (gltf) => {
   bear = gltf.scene.children[0]
   {
-    bear.position.set(0, 0, 0)
-    // bear.rotation.set(-Math.PI/2,0,0)
+    bear.position.set(-5.5, 1.0, -6.5)
+    //bear.rotation.set(-Math.PI/2,0,0)
     // bear.rotateX(Math.PI)
   }
 
@@ -257,7 +257,7 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
     `holds ${holds} holds.length ${holds.length} ${holds.length > 0}`,
   )
   if (holds.length > 0) {
-    for (const eff of ['Effector_Back_R']) {
+    for (const eff of ['Effector_Back_L', 'Effector_Back_R', 'Effector_Front_L', 'Effector_Front_R']) {
       // "Effector_Front_R", "Effector_Front_L"]) {
       const q = bearKinematics.getCurrentStateConfig()
       const origin = bearKinematics.root.matrixWorld
@@ -282,7 +282,7 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
       console.log(`${eff} ${JSON.stringify(current)}`)
 
       const h = findClosestHold(current, holds)
-      h.position.set(-current.x + 0.5, current.y, current.z)
+      //h.position.set(current.x + 0.2, current.y + 1.3, current.z - 0.25)
       h.updateMatrixWorld(true)
 
       const dist = current.distanceToSquared(h.position)
@@ -319,7 +319,7 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
 let initialized = false
 
 const loop = async () => {
-  const elapsedTime = clock.getElapsedTime()
+  const _elapsedTime = clock.getElapsedTime()
 
   fpsGraph.begin()
 
@@ -327,7 +327,35 @@ const loop = async () => {
   renderer.render(scene, camera)
 
   if (bearKinematics) {
-    // const origin : Matrix4 = bearKinematics.root.matrixWorld;
+    const origin : Matrix4 = bearKinematics.root.matrixWorld;
+
+    let q = bearKinematics.getCurrentStateConfig()
+
+    // console.log(`q: ${JSON.stringify(q)}`)
+
+    // {
+    //   const fwd = bearKinematics.forwardKinematics(q, origin);
+    //   printKinematics('main before rotation', fwd)
+    // }
+    // {
+    //   if (true) {
+    //     const n = q.RJoint_Back_Ankle_Z_L as number
+    //     q.RJoint_Back_Ankle_Z_L = n + 0.1
+    //   }
+    // }
+    // bearKinematics.setConfiguration(q)
+    // {
+    //   const fwd = bearKinematics.forwardKinematics(q, origin);
+    //   printKinematics('main after rotation', fwd)
+    // }
+
+    // {
+    //   q.RJoint_Back_Ankle_Z_L = q.RJoint_Back_Ankle_Z_L - 0.1
+    //   bearKinematics.setConfiguration(q)
+    //   const fwd4 = bearKinematics.forwardKinematics(q, origin);
+    //   printKinematics('main after reset', fwd4)
+    // }
+
 
     if (!initialized) {
       const holds = route.holds
@@ -335,29 +363,9 @@ const loop = async () => {
       initialized = initialPosition(bearKinematics, holds)
     }
 
-    let q = bearKinematics.getCurrentStateConfig()
-
-    console.log(`q: ${JSON.stringify(q)}`)
-
-    // const fwd = bearKinematics.forwardKinematics(q, origin);
-    // console.log(`fwd: ${JSON.stringify(fwd)}`);
-    // for (let effector in fwd) {
-    //   const m = fwd[effector];
-    //   console.log(effector,"x",m.slements[0 + 3*4], "y",m.elements[1+3*4], "z",m.elements[2+3*4]);
-    // }
-
-    {
-      if (false) {
-        const n = q.RJoint_Torso_XYZ_C as Rot3Angles
-        n.z = n.z + 0.2
-        q.RJoint_Torso_XYZ_C = n
-      }
-    }
-
     // bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
 
-    bearKinematics.setConfiguration(q)
-
+    
     // const joint = "Effector_Front_R";
     // const me = fwd["Effector_Front_R"].elements;
     // const pos = new Vector3( me[0+3*4], me[1+3*4], me[2+3*4] );

@@ -97,20 +97,24 @@ class Kinematics {
     return calcForwardKinematics(q2, A)
   }
 
-  forwardKinematicsRec(root: Object3D, q: JointAngles, A: Matrix4, links: LinkTransformations): LinkTransformations {
-    root.updateMatrixWorld(true)
-    links[root.name] = root.matrixWorld
-    for(const c of root.children) {
-        this.forwardKinematicsRec(c,q,A,links)
+  forwardKinematicsRec(
+    root: Object3D,
+    q: JointAngles,
+    A: Matrix4,
+    links: LinkTransformations,
+  ): LinkTransformations {
+    links[root.name] = root.matrixWorld.clone()
+    for (const c of root.children) {
+      this.forwardKinematicsRec(c, q, A, links)
     }
     return links
   }
-  
+
   forwardKinematics(q: JointAngles, A: Matrix4): LinkTransformations {
     const links: LinkTransformations = {}
     const q_old = this.getCurrentStateConfig()
     this.setConfiguration(q)
-    
+
     this.forwardKinematicsRec(this.root, q, A, links)
 
     this.setConfiguration(q_old)
@@ -139,10 +143,11 @@ class Kinematics {
       const m2 = fwd2[joint]
       const pos2 = this.getPosition(m2)
 
-      const diff = pos2.sub(pos)
-      const partDeriv = diff.divideScalar(dq)
+      const diff = pos2.clone()
+      diff.sub(pos)
+      diff.divideScalar(dq)
 
-      jac.push(partDeriv)
+      jac.push(diff)
     }
 
     return jac
@@ -318,7 +323,7 @@ class Kinematics {
           )
         }
       }
-      child.updateMatrixWorld()
+      child.updateMatrixWorld(true)
     }
   }
 }
