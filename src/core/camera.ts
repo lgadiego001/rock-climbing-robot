@@ -8,8 +8,6 @@ export const camera = new PerspectiveCamera(
   sizes.width / sizes.height,
 )
 
-camera.position.set(0, 0, 30)
-
 window.addEventListener('resize', () => {
   sizes.width = window.innerWidth
   sizes.height = window.innerHeight

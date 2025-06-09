@@ -34,7 +34,7 @@ renderer.toneMapping = ACESFilmicToneMapping
 renderer.toneMappingExposure = 1
 
 // Axes Helper
-const axesHelper = new AxesHelper()
+const axesHelper = new AxesHelper(10)
 scene.add(axesHelper)
 
 gui.addBinding(axesHelper, 'visible', {
