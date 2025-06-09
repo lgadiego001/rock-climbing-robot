@@ -1,7 +1,12 @@
 import type { Object3D } from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
-async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0): Promise<Object3D> {
+interface Route {
+  level: number
+  holds: Object3D[]
+}
+
+async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0): Promise<[Object3D, Route]> {
   async function loadRoute(url: string): Promise<string> {
     try {
       const response = await fetch(url)
@@ -89,10 +94,10 @@ async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0)
         continue
       }
       hold.position.set((width - 1 - j - width / 2) * dx, 0, (height - 1 - i - height / 2) * dy)
-      //hold.scale.set(1, 1, 1)
+      // hold.scale.set(1, 1, 1)
       hold.name = name
       hold.updateMatrixWorld(true)
-      
+
       wall!.add(hold)
       holds.push(hold)
     }
@@ -101,4 +106,4 @@ async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0)
   return [wall!, { level, holds }]
 }
 
-export { setupWall }
+export { Route, setupWall }

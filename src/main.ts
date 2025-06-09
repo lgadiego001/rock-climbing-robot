@@ -6,7 +6,11 @@ import type {
   Rot3Angles,
 } from './kinematics'
 
-import { AmbientLight, Clock, DirectionalLight, Matrix4, Vector3 } from 'three'
+import type {
+  Route,
+} from './wall'
+
+import { AmbientLight, DirectionalLight, Matrix4, Vector3 } from 'three'
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
 
@@ -33,19 +37,26 @@ directionalLight.position.set(0.25, 2, 2.25)
 
 scene.add(directionalLight)
 
-const [wall, route] = await setupWall(
-  './assets/climbing holds yup.glb',
+let wall: Object3D | null = null
+let route: Route | null = null
+
+setupWall(
+  '/climbing holds yup.glb',
   '/route3.txt',
   1.0,
   1.5,
-)
+).then( (result) => {
+  const [w, r] = result
+  wall = w
+  route = r
+  scene.add(wall as Object3D)
+})
 
-scene.add(wall)
 
 let bear = null
 let bearKinematics: Kinematics | null = null
 
-loader.load('./assets/taiwan bear.glb', (gltf) => {
+loader.load('/taiwan bear.glb', (gltf) => {
   bear = gltf.scene.children[0]
   {
     bear.position.set(-5.5, 1.0, -6.5)
@@ -133,7 +144,7 @@ camera.position.set(0, 20, -5)
 camera.updateProjectionMatrix()
 controls.update()
 
-const clock = new Clock()
+//const clock = new Clock()
 
 async function sleep(ms: number): Promise<void> {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -319,17 +330,17 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
 let initialized = false
 
 const loop = async () => {
-  const _elapsedTime = clock.getElapsedTime()
+  //const elapsedTime = clock.getElapsedTime()
 
   fpsGraph.begin()
 
   // controls.update();
   renderer.render(scene, camera)
 
-  if (bearKinematics) {
-    const origin : Matrix4 = bearKinematics.root.matrixWorld;
+  if ((bearKinematics) && (route)) {
+    //const origin : Matrix4 = bearKinematics.root.matrixWorld
 
-    let q = bearKinematics.getCurrentStateConfig()
+    //let q = bearKinematics.getCurrentStateConfig()
 
     // console.log(`q: ${JSON.stringify(q)}`)
 

@@ -10,13 +10,13 @@ interface JointAngles {
 
 type LinkTransformations = { [id:string] : Matrix4 };
 
-function printMatrix(name:string, m:Matrix4) {
-    console.log("Matrix", name);
-    for(let i = 0; i < 4; i++) {
-        console.log(m.elements[i+0*4].toFixed(2),m.elements[i+1*4].toFixed(2),m.elements[i+2*4].toFixed(2),m.elements[i+3*4].toFixed(2));
-    }
-    console.log("End of Matrix", name);
-}
+// function printMatrix(name:string, m:Matrix4) {
+//     console.log("Matrix", name);
+//     for(let i = 0; i < 4; i++) {
+//         console.log(m.elements[i+0*4].toFixed(2),m.elements[i+1*4].toFixed(2),m.elements[i+2*4].toFixed(2),m.elements[i+3*4].toFixed(2));
+//     }
+//     console.log("End of Matrix", name);
+// }
 
 
 /**
