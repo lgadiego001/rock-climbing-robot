@@ -2,7 +2,7 @@
 
 > Modern ThreeJS boilerplate powered by Vite & Typescript.
 
-![Modern ThreeJS](./public/modern-three.png)
+![Modern ThreeJS](./public/rc-bear1.png)
 
 Live demo [here](https://modern-three.alvarosaburido.dev/)
 
