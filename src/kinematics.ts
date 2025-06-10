@@ -1,6 +1,6 @@
-import type { Matrix4 } from 'three'
-import { Object3D, Vector3 } from 'three'
+import { Object3D, Vector3, Matrix4 } from 'three'
 import { calcForwardKinematics } from './taiwanbear_kinematics'
+import { Vector } from 'three/examples/jsm/Addons.js'
 
 interface Rot3Angles {
   x: number
@@ -37,6 +37,7 @@ class Kinematics {
   root: Object3D
   map: NameChildMap
   homePositionConfig: JointAngles
+  homePositionFwd: LinkTransformations
   qConfigIndex: { [key: string]: number }
   qConfigIndexReversed: string[]
   qConfigLength: number
@@ -51,7 +52,20 @@ class Kinematics {
     this.qConfigIndex = ind
     this.qConfigIndexReversed = indRev
     this.qConfigLength = this.qConfigIndexReversed.length
-    this.homePositionConfig = this.getCurrentStateConfig()
+    
+    {
+      const q = this.getCurrentStateConfig()
+      q.RJoint_Back_Lower_Z_L = (q.RJoint_Back_Lower_Z_L as number) + Math.PI / 4
+      q.RJoint_Back_Lower_Z_R = (q.RJoint_Back_Lower_Z_R as number) - Math.PI / 4
+      q.RJoint_Front_Lower_Z_L
+        = (q.RJoint_Front_Lower_Z_L as number) - Math.PI / 8
+      q.RJoint_Front_Lower_Z_R
+        = (q.RJoint_Front_Lower_Z_R as number) + Math.PI / 8
+      this.homePositionConfig = q
+      
+    }
+
+    this.homePositionFwd = this.forwardKinematics(this.homePositionConfig, new Matrix4())
   }
 
   calcQConfigIndex(map: NameChildMap): [{ [key: string]: number }, string[]] {

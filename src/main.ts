@@ -58,6 +58,10 @@ let bearKinematics: Kinematics | null = null
 
 loader.load('/rock-climbing-robot/taiwan bear.glb', (gltf) => {
   bear = gltf.scene.children[0]
+  
+  bearKinematics = new Kinematics(bear, false)
+  scene.add(bear)
+
   {
     bear.position.set(-5.5, 1.0, -6.5)
     //bear.rotation.set(-Math.PI/2,0,0)
@@ -65,8 +69,6 @@ loader.load('/rock-climbing-robot/taiwan bear.glb', (gltf) => {
   }
 
   bear.updateMatrixWorld(true)
-  bearKinematics = new Kinematics(bear, false)
-  scene.add(bear)
 
   // Set the directions for turns
 
@@ -262,11 +264,9 @@ function showKinematics(root: Object3D) {
   }
 }
 
-function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
+function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[]) {
   let init = false
-  console.log(
-    `holds ${holds} holds.length ${holds.length} ${holds.length > 0}`,
-  )
+
   if (holds.length > 0) {
     for (const eff of ['Effector_Back_L', 'Effector_Back_R', 'Effector_Front_L', 'Effector_Front_R']) {
       // "Effector_Front_R", "Effector_Front_L"]) {
@@ -283,23 +283,31 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
 
       // console.log(`initialPosition: current ${JSON.stringify(q)}\n\nkin ${JSON.stringify(fwd)}`);
 
-      const m = fwd[eff]
+        // const m = fwd[eff]
+        // const current = new Vector3(
+        //   m.elements[0 + 3 * 4],
+        //   m.elements[1 + 3 * 4],
+        //   m.elements[2 + 3 * 4],
+        // )
+        // const h = findClosestHold(current, holds)
+        // //h.updateMatrixWorld(true)
+      
+      const def_m = bearKinematics.homePositionFwd[eff]
+      const m = new Matrix4()
+      m.multiplyMatrices(origin,def_m)
       const current = new Vector3(
-        m.elements[0 + 3 * 4],
-        m.elements[1 + 3 * 4],
-        m.elements[2 + 3 * 4],
-      )
-
+          m.elements[0 + 3 * 4],
+          m.elements[1 + 3 * 4],
+          m.elements[2 + 3 * 4],
+        )
       console.log(`${eff} ${JSON.stringify(current)}`)
 
       const h = findClosestHold(current, holds)
+      //h.updateMatrixWorld(true)
+    
       //h.position.set(current.x + 0.2, current.y + 1.3, current.z - 0.25)
-      h.updateMatrixWorld(true)
-
+      
       const dist = current.distanceToSquared(h.position)
-      console.log(
-        `closest hold for ${eff} ${JSON.stringify(current)} ${h.name} ${JSON.stringify(h.position)} dist ${dist}`,
-      )
 
       const [newConfig, err, count, fwd2] = bearKinematics.inverseKinematics(
         q,
@@ -307,6 +315,8 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
         h.position,
         origin,
         0.3,
+        0.1,
+        10
       )
       console.log('IK: err', err.lengthSq(), 'vec', JSON.stringify(err), count)
       printQConfig('newConfig', newConfig)
@@ -328,6 +338,8 @@ function initialPosition(bearKinematics: Kinematics, holds: Object3D[]) {
 }
 
 let initialized = false
+
+let pathCounter = 0
 
 const loop = async () => {
   //const elapsedTime = clock.getElapsedTime()
@@ -368,13 +380,29 @@ const loop = async () => {
     // }
 
 
-    if (!initialized) {
-      const holds = route.holds
-      console.log(`loop ${holds.length}`)
-      initialized = initialPosition(bearKinematics, holds)
-    }
+    hang_on_wall(bearKinematics, route.holds)
 
     // bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
+
+    if (pathCounter < 20) {
+      bearKinematics.root.translateZ(0.05)
+    } else if (pathCounter < 30) {
+      bearKinematics.root.translateZ(0.05)
+      bearKinematics.root.translateX(0.1)
+    } else if (pathCounter < 50) {
+      bearKinematics.root.translateZ(0.05)
+    } else if (pathCounter < 60) {
+      bearKinematics.root.translateZ(0.1)
+      bearKinematics.root.translateX(0.05)
+    } else if (pathCounter < 80) {
+      bearKinematics.root.translateZ(0.1)
+    } else if (pathCounter < 100) {
+      bearKinematics.root.translateZ(0.1)
+      bearKinematics.root.translateX(-0.05)
+    } else if (pathCounter < 130) {
+      bearKinematics.root.translateZ(0.1)
+    }
+    bearKinematics.root.updateMatrixWorld(true)
 
     
     // const joint = "Effector_Front_R";
@@ -389,7 +417,7 @@ const loop = async () => {
     //   console.log('newConfig', JSON.stringify(newConfig));
     //   bearKinematics.setConfiguration(newConfig as JointAngles);
     // }
-
+    pathCounter += 1
     await sleep(100)
   }
 
