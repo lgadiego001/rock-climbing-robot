@@ -24,9 +24,9 @@ jobs:
       ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@latest
+        uses: actions/checkout@4.2.2
       - name: Setup Node.js environment
-        uses: actions/setup-node@latest
+        uses: actions/setup-node@4.4.0
         with:
           cache: 'npm'
       - name: Install dependencies
@@ -34,13 +34,13 @@ jobs:
       - name: Build
         run: npm run build
       - name: Setup pages
-        uses: actions/configure-pages@latest
+        uses: actions/configure-pages@5.0.0
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@latest
+        uses: actions/upload-pages-artifact@3.0.1
         with:
           path: './dist'
       - name: Deploy to Github Pages
         id: deployment
-        uses: actions/deploy=pages@latest
+        uses: actions/deploy-pages@4.0.5
         
       
