@@ -1,0 +1,46 @@
+name: Deploy vite app to Github pages
+
+on:
+  push: 
+    branches ['main']
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: 'pages'
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on:
+      ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@latest
+      - name: Setup Node.js environment
+        uses: actions/setup-node@latest
+        with:
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm install
+      - name: Build
+        run: npm run build
+      - name: Setup pages
+        uses: actions/configure-pages@latest
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@latest
+        with:
+          path: './dist'
+      - name: Deploy to Github Pages
+        id: deployment
+        uses: actions/deploy=pages@latest
+        
+      
