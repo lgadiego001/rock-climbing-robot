@@ -1,6 +1,6 @@
 import { Object3D, Vector3, Matrix4 } from 'three'
 import { calcForwardKinematics } from './taiwanbear_kinematics'
-import { Vector } from 'three/examples/jsm/Addons.js'
+//import { Vector } from 'three/examples/jsm/Addons.js'
 
 interface Rot3Angles {
   x: number

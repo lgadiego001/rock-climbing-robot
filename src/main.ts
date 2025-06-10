@@ -307,7 +307,7 @@ function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[]) {
     
       //h.position.set(current.x + 0.2, current.y + 1.3, current.z - 0.25)
       
-      const dist = current.distanceToSquared(h.position)
+      //const dist = current.distanceToSquared(h.position)
 
       const [newConfig, err, count, fwd2] = bearKinematics.inverseKinematics(
         q,
@@ -337,7 +337,7 @@ function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[]) {
   return init
 }
 
-let initialized = false
+//let initialized = false
 
 let pathCounter = 0
 
