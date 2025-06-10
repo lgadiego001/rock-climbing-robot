@@ -41,8 +41,8 @@ let wall: Object3D | null = null
 let route: Route | null = null
 
 setupWall(
-  '/climbing holds yup.glb',
-  '/route3.txt',
+  '/rock-climbing-robot/climbing holds yup.glb',
+  '/rock-climbing-robot/route3.txt',
   1.0,
   1.5,
 ).then( (result) => {
@@ -56,7 +56,7 @@ setupWall(
 let bear = null
 let bearKinematics: Kinematics | null = null
 
-loader.load('/taiwan bear.glb', (gltf) => {
+loader.load('/rock-climbing-robot/taiwan bear.glb', (gltf) => {
   bear = gltf.scene.children[0]
   {
     bear.position.set(-5.5, 1.0, -6.5)
