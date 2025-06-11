@@ -114,7 +114,7 @@ async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0)
   return [wall!, { level, holds }]
 }
 
-function marker_on_off(hold: Object3D, on: boolean): void {
+function marker_on_off(hold: Object3D, on: boolean) {
   if (on) {
     hold.children[0].visible = true
     hold.children[1].visible = false
@@ -122,8 +122,6 @@ function marker_on_off(hold: Object3D, on: boolean): void {
     hold.children[1].visible = true 
     hold.children[0].visible = false
   }
-
-  return on ? hold.children[0] : hold.children[1]
 }
 
 export { Route, setupWall, marker_on_off }
