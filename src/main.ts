@@ -408,7 +408,7 @@ const loop = async () => {
       bearKinematics.root.translateX(0.05)
     } else if (pathCounter < 80) {
       bearKinematics.root.translateZ(0.1)
-    } else if (pathCounter < 100) {
+    } else if (pathCounter < 120) {
       bearKinematics.root.translateZ(0.1)
       bearKinematics.root.translateX(-0.05)
     } else if (pathCounter < 130) {
@@ -430,7 +430,7 @@ const loop = async () => {
     //   bearKinematics.setConfiguration(newConfig as JointAngles);
     // }
     pathCounter += 1
-    await sleep(100)
+    await sleep(10)
   }
 
   fpsGraph.end()
