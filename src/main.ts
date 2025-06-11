@@ -19,7 +19,7 @@ import { fpsGraph, gui } from './core/gui'
 import { controls } from './core/orbit-control'
 import { renderer, scene } from './core/renderer'
 import { Kinematics } from './kinematics'
-import { setupWall } from './wall'
+import { setupWall, marker_on_off } from './wall'
 import './style.css'
 
 const loader = new GLTFLoader()
@@ -63,7 +63,7 @@ loader.load('/rock-climbing-robot/taiwan bear.glb', (gltf) => {
   scene.add(bear)
 
   {
-    bear.position.set(-5.5, 1.0, -6.5)
+    bear.position.set(0, 1.0, -6.5)
     //bear.rotation.set(-Math.PI/2,0,0)
     // bear.rotateX(Math.PI)
   }
@@ -264,10 +264,15 @@ function showKinematics(root: Object3D) {
   }
 }
 
-function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[]) {
+function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[], setMarkers = false) {
   let init = false
 
   if (holds.length > 0) {
+
+    for( const h of holds) {
+      marker_on_off(h, false)
+    } 
+
     for (const eff of ['Effector_Back_L', 'Effector_Back_R', 'Effector_Front_L', 'Effector_Front_R']) {
       // "Effector_Front_R", "Effector_Front_L"]) {
       const q = bearKinematics.getCurrentStateConfig()
@@ -316,12 +321,19 @@ function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[]) {
         origin,
         0.3,
         0.1,
-        10
+        50
       )
       console.log('IK: err', err.lengthSq(), 'vec', JSON.stringify(err), count)
       printQConfig('newConfig', newConfig)
       printKinematics('new Kin', fwd2)
 
+      if (setMarkers) {
+        if (err.lengthSq() <= 0.1) {
+          marker_on_off(h, true)
+        // } else {
+        //   hold_on_off(h, false)
+        }
+      }
       // const fwd2 = bearKinematics.forwardKinematics(newConfig as JointAngles, origin);
       // const mAfter = fwd2[eff];
       // const currentAfter = new Vector3(mAfter.elements[0 + 3*4], mAfter.elements[1+3*4], mAfter.elements[2+3*4]);
@@ -380,7 +392,7 @@ const loop = async () => {
     // }
 
 
-    hang_on_wall(bearKinematics, route.holds)
+    hang_on_wall(bearKinematics, route.holds, true)
 
     // bearKinematics.map["RJoint_Back_Upper_XYZ_R"].rotation.z += 0.2;;
 

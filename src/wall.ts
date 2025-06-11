@@ -51,9 +51,13 @@ async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0)
 
   const jugCenter2 = gltf.getObjectByName('JugCenter2')
 
+  const holdMarkerOn = gltf.getObjectByName('HoldMarkerOn')
+  
+  const holdMarkerOff = gltf.getObjectByName('HoldMarkerOff')
+
   const lines = route.split('\n')
   const height = lines.length
-  const width = lines[0].length
+  const width = lines[1].length
   const level = Number.parseInt(lines[0].trim(), 10)
 
   // wall!!.setRotationFromEuler(new Euler(0, 0, Math.PI));
@@ -93,6 +97,10 @@ async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0)
       else {
         continue
       }
+
+      hold.add(holdMarkerOn!.clone())
+      hold.add(holdMarkerOff!.clone())
+
       hold.position.set((width - 1 - j - width / 2) * dx, 0, (height - 1 - i - height / 2) * dy)
       // hold.scale.set(1, 1, 1)
       hold.name = name
@@ -106,4 +114,16 @@ async function setupWall(wallURL: string, routeURL: string, dx = 0.75, dy = 1.0)
   return [wall!, { level, holds }]
 }
 
-export { Route, setupWall }
+function marker_on_off(hold: Object3D, on: boolean): void {
+  if (on) {
+    hold.children[0].visible = true
+    hold.children[1].visible = false
+  } else {
+    hold.children[1].visible = true 
+    hold.children[0].visible = false
+  }
+
+  return on ? hold.children[0] : hold.children[1]
+}
+
+export { Route, setupWall, marker_on_off }
