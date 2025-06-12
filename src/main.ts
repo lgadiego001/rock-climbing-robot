@@ -229,7 +229,7 @@ function printMatrix(name: string, m: Matrix4) {
   console.log('End of Matrix', name)
 }
 
-function findClosestHold(pos: Vector3, holds: Object3D[]) {
+function findClosestHold(pos: Vector3, holds: Object3D[], coM: Vector3) {
   let min = 1000000
   let minHold: Object3D = holds[0]
 
@@ -248,9 +248,12 @@ function findClosestHold(pos: Vector3, holds: Object3D[]) {
       'dist',
       dist,
     )
-    if (dist < min) {
-      min = dist
-      minHold = h
+    if ((h.name.includes('Left') && (h.position.x >= coM.x)) || (h.name.includes('Right') && (h.position.x <= coM.x )) || (h.name.includes("Center") )) {
+      console.log(`Legal hold ${h.name} ${h.position.x} ${coM.position}`)
+      if (dist < min) {
+        min = dist
+        minHold = h
+      }
     }
   }
   return minHold
@@ -307,7 +310,7 @@ function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[], setMarkers 
         )
       console.log(`${eff} ${JSON.stringify(current)}`)
 
-      const h = findClosestHold(current, holds)
+      const h = findClosestHold(current, holds, bearKinematics.root.position)
       //h.updateMatrixWorld(true)
     
       //h.position.set(current.x + 0.2, current.y + 1.3, current.z - 0.25)
