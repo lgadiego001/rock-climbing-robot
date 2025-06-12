@@ -319,9 +319,9 @@ function hang_on_wall(bearKinematics: Kinematics, holds: Object3D[], setMarkers 
         eff,
         h.position,
         origin,
-        0.3,
         0.1,
-        50
+        0.05,
+        10
       )
       console.log('IK: err', err.lengthSq(), 'vec', JSON.stringify(err), count)
       printQConfig('newConfig', newConfig)
