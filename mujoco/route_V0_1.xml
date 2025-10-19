@@ -1,0 +1,77 @@
+<mujoco>
+  <compiler angle="radian" autolimits="true"/>
+  <worldbody>
+    <body name="h1" pos="-0.3 0.0 1.0" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h1 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h2" pos="0.3 0.0 1.5" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h2 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h3" pos="-0.2 0.0 3.0" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h3 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h4" pos="0.2 0.0 3.30" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h4 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h5" pos="-0.18 0.0 3.60" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h5 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h6" pos="0.18 0.0 3.95" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h6 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h7" pos="-0.25 0.0 4.2" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h7 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="h8" pos="0.22 0.0 4.5" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="h8 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    
+    <body name="Jug1Center_3" pos="-0.6 0.0 1.2" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="Jug1Center_3 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="Jug1Center_4" pos="0.4 0.0 1.4" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="Jug1Center_4 geom" mesh="Jug1Center" rgba="0 1 0 1" />
+    </body>
+    <body name="Jug2Center_5" pos="0.3 0.0 1.2" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="Jug2Center_5 geom" mesh="Jug2Center" rgba="0.8 0.2 0.8 1" />
+    </body>
+    <body name="Jug2Center_6" pos="-0.2 0.0 1.1" quat="0.70710678 0.70710678 0.0 0.0">
+        <geom type="mesh" name="Jug2Center_6 geom" mesh="Jug2Center" rgba="0.8 0.2 0.8 1" />
+    </body>
+  </worldbody>
+  <asset>
+    <mesh scale="1 1 15" name="Jug1Center" file="assets/Wall/jug1_center.obj"/>
+    <mesh name="Jug2Center" file="assets/Wall/jug3_center.obj"/>
+  </asset>
+</mujoco>
+
+import numpy as np
+
+<!-- # Function to create a quaternion from an axis and angle (in radians)
+def quaternion_from_axis_angle(axis, angle):
+    axis = np.array(axis) / np.linalg.norm(axis)  # Normalize the axis
+    half_angle = angle / 2
+    w = np.cos(half_angle)
+    xyz = axis * np.sin(half_angle)
+    return np.array([w, *xyz])
+
+# Rotation 1: 90 degrees (π/2 radians) around Z-axis
+q_z = quaternion_from_axis_angle([0, 0, 1], np.pi / 2)
+
+# Rotation 2: 180 degrees (π radians) around Y-axis
+q_y = quaternion_from_axis_angle([0, 1, 0], np.pi)
+
+# Combine the two rotations using quaternion multiplication
+def quaternion_multiply(q1, q2):
+    w1, x1, y1, z1 = q1
+    w2, x2, y2, z2 = q2
+    w = w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2
+    x = w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2
+    y = w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2
+    z = w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2
+    return np.array([w, x, y, z])
+
+# Final quaternion representing the combined rotation
+q_final = quaternion_multiply(q_y, q_z)
+
+print("Quaternion representing the combined rotation:", q_final) -->

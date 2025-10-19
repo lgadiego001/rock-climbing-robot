@@ -1,0 +1,120 @@
+<mujoco>
+  <compiler angle="radian" autolimits="true"/>
+  <worldbody>
+    <!-- Parent World [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]]-->
+    <!-- Child World [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+    <!-- Child Basis [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+    <!-- Relative Matrix [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,-2.0],[0.0,0.0,1.0,1.0],[0.0,0.0,0.0,1.0]]-->
+    <body name="TaiwanBear" pos="0.0 -2.0 1.0" quat="1.0 0.0 0.0 0.0" >
+    <freejoint/>
+      <geom type="mesh" name="TaiwanBear geom" mesh="Body" rgba="1.0 1.0 1.0 1.0"  />
+      <!-- Parent World [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+      <!-- Child World [[-0.0,-0.0,1.0,0.14],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,-0.0,-0.01],[0.0,0.0,0.0,1.0]]-->
+      <!-- Child Basis [[-0.0,-0.0,1.0,0.14],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,-0.0,0.55],[0.0,0.0,0.0,1.0]]-->
+      <!-- Relative Matrix [[-0.0,-0.0,1.0,0.14],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,-0.0,-0.01],[0.0,0.0,0.0,1.0]]-->
+      <body name="RJoint_Back_Upper_XYZ_L" pos="0.13750000298023224 0.05874907597899437 -0.007581830024719238" quat="0.7071067094802856 -4.039740918418697e-23 0.7071068286895752 -3.4470432145997354e-23" >
+      <joint type="hinge" name="RJoint_Back_Upper_XYZ_L_X" pos="0.0 0.0 0.0" axis = "1 0 0" damping="1.084" armature="0.045" frictionloss="0.03"  />
+      <joint type="hinge" name="RJoint_Back_Upper_XYZ_L_Y" pos="0.0 0.0 0.0" axis = "0 1 0" damping="1.084" armature="0.045" frictionloss="0.03"  />
+      <joint type="hinge" name="RJoint_Back_Upper_XYZ_L_Z" pos="0.0 0.0 0.0" axis = "0 0 1" damping="1.084" armature="0.045" frictionloss="0.03"  />
+        <geom type="mesh" name="RJoint_Back_Upper_XYZ_L geom" mesh="Sphere.008" rgba="1.0 1.0 1.0 1.0"  />
+        <!-- Parent World [[-0.0,-0.0,1.0,0.14],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,-0.0,0.4],[0.0,0.0,0.0,1.0]]-->
+        <!-- Child World [[0.0,0.0,-1.0,0.07],[0.0,1.0,0.0,0.0],[1.0,-0.0,0.0,0.17],[0.0,0.0,0.0,1.0]]-->
+        <!-- Child Basis [[1.0,-0.0,0.0,0.31],[0.0,1.0,0.0,0.06],[-0.0,0.0,1.0,0.33],[0.0,0.0,0.0,1.0]]-->
+        <!-- Relative Matrix [[0.0,0.0,-1.0,0.07],[0.0,1.0,0.0,0.0],[1.0,-0.0,0.0,0.17],[0.0,0.0,0.0,1.0]]-->
+        <body name="Link_Back_Upper_L" pos="0.0715809315443039 0.0001692250370979309 0.17234477400779724" quat="0.7071067690849304 -1.5454318713636894e-08 -0.7071067690849304 1.5454316937280055e-08" >
+          <geom type="mesh" name="Link_Back_Upper_L geom" mesh="Cylinder.029" rgba="1.0 1.0 1.0 1.0"  />
+          <!-- Parent World [[1.0,-0.0,0.0,0.31],[0.0,1.0,0.0,0.06],[-0.0,0.0,1.0,0.33],[0.0,0.0,0.0,1.0]]-->
+          <!-- Child World [[0.0,-0.0,1.0,-0.13],[-0.0,1.0,0.0,-0.0],[-1.0,-0.0,0.0,-0.1],[0.0,0.0,0.0,1.0]]-->
+          <!-- Child Basis [[0.0,-0.0,1.0,0.18],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,0.0,0.23],[0.0,0.0,0.0,1.0]]-->
+          <!-- Relative Matrix [[0.0,-0.0,1.0,-0.13],[-0.0,1.0,0.0,-0.0],[-1.0,-0.0,0.0,-0.1],[0.0,0.0,0.0,1.0]]-->
+          <body name="RJoint_Back_Lower_Z_L" pos="-0.12908029556274414 -0.0001074858009815216 -0.1000436320900917" quat="0.7071070075035095 -6.880351052351158e-14 0.7071065306663513 -4.672318101536267e-14" >
+          <joint type="hinge" name="RJoint_Back_Lower_Z_L_Z" pos="0.0 0.0 0.0" axis="6.556510925292969e-07 -1.633794011537959e-13 -0.9999999403953552"  />
+            <geom type="mesh" name="RJoint_Back_Lower_Z_L geom" mesh="Cylinder.028" rgba="1.0 1.0 1.0 1.0"  />
+            <!-- Parent World [[0.0,-0.0,1.0,0.18],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,0.0,0.23],[0.0,0.0,0.0,1.0]]-->
+            <!-- Child World [[0.0,0.0,-1.0,0.08],[-0.0,1.0,0.0,0.0],[1.0,-0.0,0.0,0.13],[0.0,0.0,0.0,1.0]]-->
+            <!-- Child Basis [[1.0,-0.0,-0.0,0.31],[0.0,1.0,0.0,0.06],[0.0,-0.0,1.0,0.15],[0.0,0.0,0.0,1.0]]-->
+            <!-- Relative Matrix [[0.0,0.0,-1.0,0.08],[-0.0,1.0,0.0,0.0],[1.0,-0.0,0.0,0.13],[0.0,0.0,0.0,1.0]]-->
+            <body name="Link_Back_Lower_L" pos="0.07540349662303925 0.00010750070214271545 0.13057175278663635" quat="0.70710688829422 -3.652770885764767e-08 -0.7071066498756409 -3.652769109407927e-08" >
+              <geom type="mesh" name="Link_Back_Lower_L geom" mesh="Cylinder.027" rgba="1.0 1.0 1.0 1.0"  />
+              <!-- Parent World [[1.0,-0.0,-0.0,0.31],[0.0,1.0,0.0,0.06],[0.0,-0.0,1.0,0.15],[0.0,0.0,0.0,1.0]]-->
+              <!-- Child World [[0.0,-0.0,1.0,-0.13],[0.0,1.0,0.0,-0.0],[-1.0,0.0,0.0,-0.08],[0.0,0.0,0.0,1.0]]-->
+              <!-- Child Basis [[0.0,-0.0,1.0,0.18],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,0.0,0.07],[0.0,0.0,0.0,1.0]]-->
+              <!-- Relative Matrix [[0.0,-0.0,1.0,-0.13],[0.0,1.0,0.0,-0.0],[-1.0,0.0,0.0,-0.08],[0.0,0.0,0.0,1.0]]-->
+              <body name="RJoint_Back_Ankle_Z_L" pos="-0.13057217001914978 -0.00010742992162704468 -0.08304084092378616" quat="0.7071069478988647 3.6527627145233055e-08 0.7071065902709961 3.652775149021181e-08" >
+              <joint type="hinge" name="RJoint_Back_Ankle_Z_L_Z" pos="0.0 0.0 0.0" axis="5.066394805908203e-07 1.0331590516443612e-07 -0.9999999403953552"  />
+                <geom type="mesh" name="RJoint_Back_Ankle_Z_L geom" mesh="Cylinder.026" rgba="1.0 1.0 1.0 1.0"  />
+                <!-- Parent World [[0.0,-0.0,1.0,0.18],[-0.0,1.0,0.0,0.06],[-1.0,-0.0,0.0,0.07],[0.0,0.0,0.0,1.0]]-->
+                <!-- Child World [[0.0,0.0,-1.0,-0.08],[-0.0,1.0,0.0,-0.01],[1.0,-0.0,0.0,0.13],[0.0,0.0,0.0,1.0]]-->
+                <!-- Child Basis [[1.0,-0.0,-0.0,0.31],[0.0,1.0,0.0,0.05],[0.0,-0.0,1.0,0.15],[0.0,0.0,0.0,1.0]]-->
+                <!-- Relative Matrix [[0.0,0.0,-1.0,-0.08],[-0.0,1.0,0.0,-0.01],[1.0,-0.0,0.0,0.13],[0.0,0.0,0.0,1.0]]-->
+                <body name="Link_Back_Foot_L" pos="-0.08304113894701004 -0.006338123232126236 0.12907879054546356" quat="0.70710688829422 -7.305548166414155e-08 -0.7071066498756409 -7.305543903157741e-08" >
+                  <geom type="mesh" name="Link_Back_Foot_L geom" mesh="Cylinder.025" rgba="1.0 1.0 1.0 1.0"  />
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <!-- Parent World [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+      <!-- Child World [[0.0,1.0,0.0,0.0],[-1.0,0.0,-0.0,-0.22],[-0.0,-0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+      <!-- Child Basis [[0.0,1.0,0.0,0.0],[-1.0,0.0,-0.0,-0.22],[-0.0,-0.0,1.0,0.55],[0.0,0.0,0.0,1.0]]-->
+      <!-- Relative Matrix [[0.0,1.0,0.0,0.0],[-1.0,0.0,-0.0,-0.22],[-0.0,-0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+      <body name="RJoint_Torso_C_XYZ_C" pos="3.489845301629657e-09 -0.22252723574638367 0.4072185158729553" quat="0.70710688829422 -4.2146837131440407e-08 4.21468548950088e-08 -0.7071066498756409" >
+      <joint type="hinge" name="RJoint_Torso_C_XYZ_C_X" pos="0.0 0.0 0.0" axis = "1 0 0" damping="1.084" armature="0.045" frictionloss="0.03"  />
+      <joint type="hinge" name="RJoint_Torso_C_XYZ_C_Y" pos="0.0 0.0 0.0" axis = "0 1 0" damping="1.084" armature="0.045" frictionloss="0.03"  />
+      <joint type="hinge" name="RJoint_Torso_C_XYZ_C_Z" pos="0.0 0.0 0.0" axis = "0 0 1" damping="1.084" armature="0.045" frictionloss="0.03"  />
+        <geom type="mesh" name="RJoint_Torso_C_XYZ_C geom" mesh="Sphere.009" rgba="1.0 1.0 1.0 1.0"  />
+        <!-- Parent World [[0.0,1.0,0.0,0.0],[-1.0,0.0,-0.0,-0.22],[-0.0,-0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+        <!-- Child World [[0.0,-1.0,-0.0,0.18],[1.0,0.0,-0.0,-0.0],[0.0,-0.0,1.0,0.0],[0.0,0.0,0.0,1.0]]-->
+        <!-- Child Basis [[1.0,0.0,-0.0,0.0],[-0.0,1.0,-0.0,-0.4],[0.0,0.0,1.0,0.56],[0.0,0.0,0.0,1.0]]-->
+        <!-- Relative Matrix [[0.0,-1.0,-0.0,0.18],[1.0,0.0,-0.0,-0.0],[0.0,-0.0,1.0,0.0],[0.0,0.0,0.0,1.0]]-->
+        <body name="Link_UpperBody_C" pos="0.18047524988651276 -4.2302517044845445e-09 0.0019750595092773438" quat="0.70710688829422 4.2146844236867764e-08 -4.214686555314984e-08 0.7071066498756409" >
+          <geom type="mesh" name="Link_UpperBody_C geom" mesh="Body.002" rgba="1.0 1.0 1.0 1.0"  />
+          <!-- Parent World [[1.0,0.0,0.0,0.0],[-0.0,1.0,-0.0,-0.4],[0.0,-0.0,1.0,0.41],[0.0,0.0,0.0,1.0]]-->
+          <!-- Child World [[-1.0,0.0,0.0,0.0],[-0.0,-0.0,-1.0,-0.08],[-0.0,-1.0,-0.0,-0.0],[0.0,0.0,0.0,1.0]]-->
+          <!-- Child Basis [[-1.0,0.0,0.0,0.0],[-0.0,-0.0,-1.0,-0.49],[-0.0,-1.0,-0.0,0.56],[0.0,0.0,0.0,1.0]]-->
+          <!-- Relative Matrix [[-1.0,0.0,0.0,0.0],[-0.0,-0.0,-1.0,-0.08],[-0.0,-1.0,-0.0,-0.0],[0.0,0.0,0.0,1.0]]-->
+          <body name="RJoint_Head_C_XYZ_C" pos="0.0033017208334058523 -0.08442497253417969 -5.960464477539063e-08" quat="2.2684524481064727e-07 8.916338600784002e-08 0.7071067690849304 -0.7071067690849304" >
+          <joint type="hinge" name="RJoint_Head_C_XYZ_C_X" pos="0.0 0.0 0.0" axis = "1 0 0" damping="1.084" armature="0.045" frictionloss="0.03"  />
+          <joint type="hinge" name="RJoint_Head_C_XYZ_C_Y" pos="0.0 0.0 0.0" axis = "0 1 0" damping="1.084" armature="0.045" frictionloss="0.03"  />
+          <joint type="hinge" name="RJoint_Head_C_XYZ_C_Z" pos="0.0 0.0 0.0" axis = "0 0 1" damping="1.084" armature="0.045" frictionloss="0.03"  />
+            <geom type="mesh" name="RJoint_Head_C_XYZ_C geom" mesh="Sphere.002" rgba="1.0 1.0 1.0 1.0"  />
+            <!-- Parent World [[-1.0,0.0,0.0,0.0],[-0.0,-0.0,-1.0,-0.49],[-0.0,-1.0,-0.0,0.41],[0.0,0.0,0.0,1.0]]-->
+            <!-- Child World [[-1.0,0.0,-0.0,0.0],[0.0,0.0,-1.0,-0.06],[-0.0,-1.0,0.0,0.13],[0.0,0.0,0.0,1.0]]-->
+            <!-- Child Basis [[1.0,-0.0,-0.0,-0.0],[0.0,1.0,-0.0,-0.62],[0.0,0.0,1.0,0.61],[0.0,0.0,0.0,1.0]]-->
+            <!-- Relative Matrix [[-1.0,0.0,-0.0,0.0],[0.0,0.0,-1.0,-0.06],[-0.0,-1.0,0.0,0.13],[0.0,0.0,0.0,1.0]]-->
+            <body name="Head.C" pos="0.004905790090560913 -0.05673738941550255 0.13180413842201233" quat="4.215534588070113e-09 1.1098590135816266e-07 0.7071067094802856 -0.7071068286895752" >
+              <geom type="mesh" name="Head.C geom" mesh="Body.001" rgba="1.0 1.0 1.0 1.0"  />
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+  <asset>
+    <mesh name="Body" file="assets/TaiwanBear/Body.obj"/>
+    <mesh name="Sphere.008" file="assets/TaiwanBear/Sphere.008.obj"/>
+    <mesh name="Cylinder.029" file="assets/TaiwanBear/Cylinder.029.obj"/>
+    <mesh name="Cylinder.028" file="assets/TaiwanBear/Cylinder.028.obj"/>
+    <mesh name="Cylinder.027" file="assets/TaiwanBear/Cylinder.027.obj"/>
+    <mesh name="Cylinder.026" file="assets/TaiwanBear/Cylinder.026.obj"/>
+    <mesh name="Cylinder.025" file="assets/TaiwanBear/Cylinder.025.obj"/>
+    <mesh name="Sphere.009" file="assets/TaiwanBear/Sphere.009.obj"/>
+    <mesh name="Body.002" file="assets/TaiwanBear/Body.002.obj"/>
+    <mesh name="Sphere.002" file="assets/TaiwanBear/Sphere.002.obj"/>
+    <mesh name="Body.001" file="assets/TaiwanBear/Body.001.obj"/>
+  </asset>
+  <actuator>
+    <position name="Back_Upper_X" joint="RJoint_Back_Upper_XYZ_L_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Back_Upper_Y" joint="RJoint_Back_Upper_XYZ_L_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Back_Upper_Z" joint="RJoint_Back_Upper_XYZ_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Back_Lower_Z" joint="RJoint_Back_Lower_Z_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Back_Ankle_Z" joint="RJoint_Back_Ankle_Z_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Torso_C_X" joint="RJoint_Torso_C_XYZ_C_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Torso_C_Y" joint="RJoint_Torso_C_XYZ_C_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Torso_C_Z" joint="RJoint_Torso_C_XYZ_C_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Head_C_X" joint="RJoint_Head_C_XYZ_C_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Head_C_Y" joint="RJoint_Head_C_XYZ_C_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Head_C_Z" joint="RJoint_Head_C_XYZ_C_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+  </actuator>
+</mujoco>
