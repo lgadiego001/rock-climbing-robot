@@ -1,0 +1,11 @@
+<mujoco model="ground plane">
+  <asset>
+    <!-- Define checker texture -->
+    <texture name="checker_tex" type="2d" builtin="checker" width="512" height="512" rgb1="0.2 0.2 0.2" rgb2="0.8 0.8 0.8"/>
+    <material name="checker_mat" texture="checker_tex" texrepeat="3 5" />
+  </asset>
+
+  <worldbody>
+    <geom name="floor" size="7 7 0.01" type="plane" material="checker_mat" rgba="1 1 1 1"/>
+  </worldbody>
+</mujoco>

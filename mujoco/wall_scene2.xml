@@ -1,0 +1,25 @@
+<mujoco model="taiwanbear scene">
+  <include file="taiwanbear.xml"/>
+  <include file="wall.xml"/>
+  <include file="groundplane.xml"/>
+  <include file="route_V0_1.xml"/>
+  <include file="op3_on_wall.xml"/>
+
+
+
+  <statistic center="0 0 0.2" extent="0.6"/>
+  <option gravity="0 0 -9.81" />
+
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="160" elevation="-20"/>
+  </visual>
+
+  <worldbody>
+    <light pos="-2 -1 3"/>
+    <light pos="2 -1 3"/>
+
+  </worldbody>
+</mujoco>
