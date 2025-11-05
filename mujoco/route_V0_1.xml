@@ -40,14 +40,15 @@
     </body>
   </worldbody>
   <asset>
-    <mesh scale="1 1 15" name="Jug1Center" file="assets/Wall/jug1_center.obj"/>
+    <mesh scale="1 1 10" name="Jug1Center" file="assets/Wall/jug1_center.obj"/>
     <mesh name="Jug2Center" file="assets/Wall/jug3_center.obj"/>
   </asset>
 </mujoco>
 
-import numpy as np
 
 <!-- # Function to create a quaternion from an axis and angle (in radians)
+import numpy as np
+
 def quaternion_from_axis_angle(axis, angle):
     axis = np.array(axis) / np.linalg.norm(axis)  # Normalize the axis
     half_angle = angle / 2

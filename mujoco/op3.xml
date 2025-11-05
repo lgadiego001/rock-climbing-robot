@@ -259,4 +259,14 @@
     <position name="r_ank_pitch_act" joint="r_ank_pitch"/>
     <position name="r_ank_roll_act" joint="r_ank_roll"/>
   </actuator>
+
+  <keyframe>
+    <key
+      name="start_on_wall"
+      qpos="0 -0.07 4.5 0.707388 0 0 0.706825 0 0 -2.98452 0.502656 -0.848232 1.28806 -0.659736 0.219912 -0.345576 -0.15708 -0.911064 0.7854 -0.15708 -0.094248 0.251328 0.345576 0.94248 -0.94248 0.15708 0"
+      qvel="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+      ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+    />
+  </keyframe>
+
 </mujoco>
