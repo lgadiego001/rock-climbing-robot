@@ -58,13 +58,13 @@
         <geom type="mesh" mesh="Jug1Center" rgba="0.2 0.8 0.2 1" />
         <geom  type="box" pos="0 0 0.05" size="0.06 0.02 0.08" rgba="0.1 0.4 0.1 0.5"/>
     </body>
-    <body pos="0.15 0.0 2.45" quat="0.70710678 0.70710678 0.0 0.0">
+    <body pos="0.15 0.0 2.40" quat="0.70710678 0.70710678 0.0 0.0">
         <geom type="mesh" mesh="Jug2Center" rgba="0.8 0.2 0.8 1" />
-        <geom  type="box" pos="0 0 0.03" size="0.06 0.02 0.01" rgba="0.1 0.4 0.1 0.5"/>
+        <geom  type="box" pos="0 0 0.043" size="0.06 0.06 0.001" rgba="0.1 0.4 0.1 0.5"/>
     </body>
-    <body pos="-0.15 0.0 2.25" quat="0.70710678 0.70710678 0.0 0.0">
+    <body pos="-0.15 0.0 2.35" quat="0.70710678 0.70710678 0.0 0.0">
         <geom type="mesh" mesh="Jug1Center" rgba="0.2 0.8 0.2 1" />
-        <geom  type="box" pos="0.0 0.1 0.03" size="0.06 0.02 0.01" rgba="0.1 0.4 0.1 0.5"/>
+        <geom  type="box" pos="0.0 0.0 0.043" size="0.06 0.06 0.002" rgba="0.1 0.4 0.1 0.5"/>
     </body>
   </worldbody>
   <asset>

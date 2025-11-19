@@ -2,7 +2,7 @@
   <include file="taiwanbear.xml"/>
   <include file="wall.xml"/>
   <include file="groundplane.xml"/>
-  <include file="route_V0_1.xml"/>
+  <include file="route_V0_2.xml"/>
   <include file="op3_on_wall.xml"/>
 
 

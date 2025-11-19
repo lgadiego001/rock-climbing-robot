@@ -8,7 +8,7 @@
     <!-- Child Local [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,-0.0],[0.0,0.0,1.0,0.4],[0.0,0.0,0.0,1.0]]-->
     <!-- Child Basis [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,-0.0],[0.0,0.0,1.0,0.4],[0.0,0.0,0.0,1.0]]-->
     <!-- Relative Matrix [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,-2.0],[0.0,0.0,1.0,1.0],[0.0,0.0,0.0,1.0]]-->
-    <body name="TaiwanBear" pos="0.0 -0.47 2.10" euler="1.45 0 3.1415" >
+    <body name="TaiwanBear" pos="0.0 -2.0 1.0" quat="1.0 0.0 0.0 0.0" >
     <freejoint/>
       <geom type="mesh" name="TaiwanBear geom" mesh="Body" rgba="1.0 1.0 1.0 1.0"  />
       <!-- Parent World [[1.0,0.0,0.0,-0.0],[0.0,1.0,0.0,-0.0],[0.0,0.0,1.0,0.4],[0.0,0.0,0.0,1.0]]-->
@@ -228,8 +228,8 @@
                       <!-- Child Local [[1.0,0.0,0.0,-0.15],[0.0,1.0,0.0,0.38],[-0.0,0.0,1.0,-0.06],[0.0,0.0,0.0,1.0]]-->
                       <!-- Child Basis [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,-0.04],[-0.0,0.0,1.0,-0.02],[0.0,0.0,0.0,1.0]]-->
                       <!-- Relative Matrix [[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,-0.04],[-0.0,0.0,1.0,-0.02],[0.0,0.0,0.0,1.0]]-->
-                      <body name="Link_Front_Claws_L" pos="0.0 -0.041048914194107056 -0.017940793186426163" quat="1.0 0.0 1.4210908925310628e-14 0.0" >
-                        <geom type="mesh" name="Link_Front_Claws_L geom" mesh="Cube" rgba="1.0 1.0 1.0 1.0"  />
+                      <body name="Cube" pos="0.0 -0.041048914194107056 -0.017940793186426163" quat="1.0 0.0 1.4210908925310628e-14 0.0" >
+                        <geom type="mesh" name="Cube geom" mesh="Cube" rgba="1.0 1.0 1.0 1.0"  />
                       </body>
                     </body>
                   </body>
@@ -373,31 +373,31 @@
     <mesh name="Body.001" file="assets/TaiwanBear/Body.001.obj"/>
   </asset>
   <actuator>
-    <position name="Back_Upper_X_L" joint="RJoint_Back_Upper_XYZ_L_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Upper_Y_L" joint="RJoint_Back_Upper_XYZ_L_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Upper_Z_L" joint="RJoint_Back_Upper_XYZ_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Lower_Z_L" joint="RJoint_Back_Lower_Z_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Ankle_Z_L" joint="RJoint_Back_Ankle_Z_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Upper_X_R" joint="RJoint_Back_Upper_XYZ_R_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Upper_Y_R" joint="RJoint_Back_Upper_XYZ_R_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Upper_Z_R" joint="RJoint_Back_Upper_XYZ_R_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Lower_Z_R" joint="RJoint_Back_Lower_Z_R_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Back_Ankle_Z_R" joint="RJoint_Back_Ankle_Z_R_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Torso_C_X_C" joint="RJoint_Torso_C_XYZ_C_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Torso_C_Y_C" joint="RJoint_Torso_C_XYZ_C_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Torso_C_Z_C" joint="RJoint_Torso_C_XYZ_C_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Upper_X_L" joint="RJoint_Front_Upper_XYZ_L_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Upper_Y_L" joint="RJoint_Front_Upper_XYZ_L_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Upper_Z_L" joint="RJoint_Front_Upper_XYZ_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Lower_Z_L" joint="RJoint_Front_Lower_Z_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Ankle_Z_L" joint="RJoint_Front_Ankle_Z_L_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Upper_X_R" joint="RJoint_Front_Upper_XYZ_R_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Upper_Y_R" joint="RJoint_Front_Upper_XYZ_R_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Upper_Z_R" joint="RJoint_Front_Upper_XYZ_R_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Lower_Z_R" joint="RJoint_Front_Lower_Z_R_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Front_Ankle_Z_R" joint="RJoint_Front_Ankle_Z_R_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Head_C_X_C" joint="RJoint_Head_C_XYZ_C_X" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Head_C_Y_C" joint="RJoint_Head_C_XYZ_C_Y" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
-    <position name="Head_C_Z_C" joint="RJoint_Head_C_XYZ_C_Z" kp="21.1" ctrlrange="-1.57 1.57" forcerange="-10000 10000" />
+    <position name="Back_Upper_X_L" joint="RJoint_Back_Upper_XYZ_L_X" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Upper_Y_L" joint="RJoint_Back_Upper_XYZ_L_Y" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Upper_Z_L" joint="RJoint_Back_Upper_XYZ_L_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Lower_Z_L" joint="RJoint_Back_Lower_Z_L_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Ankle_Z_L" joint="RJoint_Back_Ankle_Z_L_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Upper_X_R" joint="RJoint_Back_Upper_XYZ_R_X" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Upper_Y_R" joint="RJoint_Back_Upper_XYZ_R_Y" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Upper_Z_R" joint="RJoint_Back_Upper_XYZ_R_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Lower_Z_R" joint="RJoint_Back_Lower_Z_R_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Back_Ankle_Z_R" joint="RJoint_Back_Ankle_Z_R_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Torso_C_X_C" joint="RJoint_Torso_C_XYZ_C_X" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Torso_C_Y_C" joint="RJoint_Torso_C_XYZ_C_Y" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Torso_C_Z_C" joint="RJoint_Torso_C_XYZ_C_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Upper_X_L" joint="RJoint_Front_Upper_XYZ_L_X" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Upper_Y_L" joint="RJoint_Front_Upper_XYZ_L_Y" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Upper_Z_L" joint="RJoint_Front_Upper_XYZ_L_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Lower_Z_L" joint="RJoint_Front_Lower_Z_L_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Ankle_Z_L" joint="RJoint_Front_Ankle_Z_L_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Upper_X_R" joint="RJoint_Front_Upper_XYZ_R_X" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Upper_Y_R" joint="RJoint_Front_Upper_XYZ_R_Y" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Upper_Z_R" joint="RJoint_Front_Upper_XYZ_R_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Lower_Z_R" joint="RJoint_Front_Lower_Z_R_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Front_Ankle_Z_R" joint="RJoint_Front_Ankle_Z_R_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Head_C_X_C" joint="RJoint_Head_C_XYZ_C_X" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Head_C_Y_C" joint="RJoint_Head_C_XYZ_C_Y" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
+    <position name="Head_C_Z_C" joint="RJoint_Head_C_XYZ_C_Z" kp="250.0" ctrlrange="-3.15 3.15" forcerange="-1000 1000" />
   </actuator>
 </mujoco>
