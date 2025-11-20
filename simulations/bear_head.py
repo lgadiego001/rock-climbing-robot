@@ -23,7 +23,7 @@ def merge_mujoco_soups(soup1, soup2):
         for body in worldbody2.find_all('body', recursive=False):
             worldbody1.append(body)
 
-    # Merge default
+    # Merge worldbody
     default1 = soup1.find('default')
     default2 = soup2.find('default')
     if default1 is None and default2 is not None:
@@ -46,17 +46,6 @@ def merge_mujoco_soups(soup1, soup2):
     
     return soup1
 
-def fix_assets(env, assets_dir):
-    if assets_dir:
-        meshes = env.find_all('mesh', file=True)
-        for mesh in meshes:
-            mesh['file'] = str(assets_dir + '/' + mesh['file'])
-
-        textures = env.find_all('texture', file=True)
-        for tex in textures:
-            tex['file'] = str(assets_dir + '/' + tex['file'])
-
-    return env
 
 def create_bear_walking_simulation(model_path, assets_dir = None, initial=None):
     if assets_dir is None:
@@ -74,6 +63,8 @@ def create_bear_walking_simulation(model_path, assets_dir = None, initial=None):
     </asset>
 
     <worldbody>
+        <camera pos="1.377 -4.506 2.566" xyaxes="0.956 0.292 0.000 -0.140 0.457 0.878"/>
+
         <body name="ground" pos="0 0 0">
             <geom name="floor" size="10 10 0.01" type="plane" material="checker_mat" rgba="1 1 1 1"/>
         </body>
@@ -83,54 +74,15 @@ def create_bear_walking_simulation(model_path, assets_dir = None, initial=None):
     </worldbody>
 </mujoco>
 """
-    # env = BeautifulSoup(ground_plane_xml, features='xml')
-    
-    with open("../mujoco/groundplane.xml", encoding='utf-8') as f:
-        xml_s = f.read()
-        env = BeautifulSoup(xml_s, features='xml')
 
-    with open("../mujoco/wall.xml", encoding='utf-8') as f:
-        xml_s = f.read()
-        xml_obj = BeautifulSoup(xml_s, features='xml')
-        env = merge_mujoco_soups(env, xml_obj)
-    
-    with open("../mujoco/route_V0_2.xml", encoding='utf-8') as f:
-        xml_s = f.read()
-        xml_obj = BeautifulSoup(xml_s, features='xml')
-        env = merge_mujoco_soups(env, xml_obj)
-
-    with open("../mujoco/taiwanbear.xml", encoding='utf-8') as f:
-        xml_s = f.read()
-        xml_obj = BeautifulSoup(xml_s, features='xml')
-        env = merge_mujoco_soups(env, xml_obj)
-
-    cam_xml = f""" 
-        <camera pos="1.377 -4.506 2.566" xyaxes="0.956 0.292 0.000 -0.140 0.457 0.878"/>
-    """
-    cam_bs = BeautifulSoup(cam_xml, features='xml')
-    env.mujoco.worldbody.append(cam_bs)
-
-
-    joints = env.find_all('joint')
-    for j in joints:
-        j['damping']="3" # "1.084" 
-        j['armature']="0.045" 
-        j['frictionloss']="0.03"
+    env = BeautifulSoup(ground_plane_xml, features='xml')
+    env = merge_mujoco_soups(env, bear)
 
     acts = env.find('actuator')
     if acts:
         for act in acts:
-            act['kp'] = 200.0
-            act['forcerange'] = '-500 500'
-
-    env = fix_assets(env, assets_dir)
-
-    bear = env.find("body", {"name": "TaiwanBear"})
-    bear["pos"]="0 -0.43 2.02"
-    if bear['quat'] is not None:
-        del bear['quat']
-    bear['euler'] = "90 0 180"
-
+            act['kp'] = 100.0
+                
      # Save the merged model XML for inspection
     with open("merged_model.xml", 'w') as file:
         file.write(env.prettify())
@@ -267,16 +219,31 @@ def calc_mapping(model, data):
 
 def run_simulation(model_path, assets_dir = None, initial=None):
     model, data = create_bear_walking_simulation(model_path, assets_dir)  
-    #mocap_id = model.body("Head Target").mocapid[0]
-    #site_id = model.site("Head Site").id
+    mocap_id = model.body("Head Target").mocapid[0]
+    site_id = model.site("Head Site").id
 
-    with mujoco.viewer.launch_passive(model, data) as viewer:    
+    mapping = calc_mapping(model, data)
+
+    target_traj = []
+    end_effector_traj = []
+    
+    with mujoco.viewer.launch_passive(model, data) as viewer:
+        
+        
         while viewer.is_running():
+            data.mocap_pos[mocap_id, 0:3] = target_trajectory(data.time, r=0, h=0, j=-0.7, k=0.5, f=0.05)[0:3]
+
+            apply_ik_step(model, data, site_id, mocap_id)
             mujoco.mj_step(model, data)
 
+            target_traj.append(data.mocap_pos[mocap_id].copy())
+            end_effector_traj.append(data.site(site_id).xpos.copy())
+            # modify_scene(viewer.renderer.scene, target_traj, end_effector_traj)
+
             viewer.sync()
-            time.sleep(0.01)
-            
+            #time.sleep(0.001)
+            break
+
 def run_simulation_glfw(model_path, assets_dir = None, initial=None):
     model, data = create_bear_walking_simulation(model_path, assets_dir)  
     mocap_id = model.body("Head Target").mocapid[0]
@@ -334,8 +301,8 @@ def load_model(model_path, assets_dir = None, initial=None):
             mesh['file'] = str(assets_dir + '/' + mesh['file'])
 
     # Set initial attributes if provided
-    bear_el = soup.find("body", {"name": "TaiwanBear"})
-    #bear_el = soup.find("body", {"name": "root"})
+    #bear_el = soup.find("body", {"name": "TaiwanBear"})
+    bear_el = soup.find("body", {"name": "root"})
     if bear_el:
         bear_el['pos'] = "0 0 0.42"
         bear_el['euler'] = "0 0 0"
@@ -371,6 +338,6 @@ def main(argv = None):
     run_simulation(args.model, args.assets, args.initial)
     
 if __name__ == "__main__":
-    #main(["--model", "./mujoco/op3.xml"])
-    main(["--model", "../mujoco/taiwanbear.xml", '--assets', '../mujoco'])
+    main(["--model", "./mujoco/op3.xml"])
+    #main(["--model", "../mujoco/taiwanbear.xml"])
 
