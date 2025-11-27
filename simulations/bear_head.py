@@ -196,12 +196,12 @@ def apply_ik_step(model, data, site_id, mocap_id):
     # Add dq to q, here results should be the same as q = q + dq. It is different when q includes quaternian
     mujoco.mj_integratePos(model, q, dq, 1)
     
-    #control = np.zeros((model.nv,3))
-    #control[:,0] = data.qpos
-    #control[:,1] = q
-    #control[:,2] = control[:,1] - control[:,0]
+    control = np.zeros((model.nv,3))
+    control[:,0] = data.qpos
+    control[:,1] = q
+    control[:,2] = control[:,1] - control[:,0]
 
-    #print("Control", control)
+    print("Control", control)
 
     # Our robot is configured to be position control
     # Here we direct set the control signal to the desired position
@@ -223,7 +223,8 @@ def apply_ik_step(model, data, site_id, mocap_id):
     print("*** error", np.linalg.norm(error[:3]))
     print(data.ctrl.shape, q.shape, data.ctrl)
     #np.clip(q[6:], *model.jnt_range.T, out=q[6:])
-    data.ctrl[-3:] = q[-3:]
+    #data.ctrl[-3:] = q[-3:]
+    data.ctrl[7:] = q
 
 def calc_mapping(model, data):
     #joint_mapping = {}
