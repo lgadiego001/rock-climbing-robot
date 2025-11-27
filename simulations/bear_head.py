@@ -78,11 +78,26 @@ def create_bear_walking_simulation(model_path, assets_dir = None, initial=None):
     env = BeautifulSoup(ground_plane_xml, features='xml')
     env = merge_mujoco_soups(env, bear)
 
+    joints = env.find_all('joint')
+    for j in joints:
+        j['damping']="3" # "1.084" 
+        j['armature']="0.045" 
+        j['frictionloss']="0.03"
+
     acts = env.find('actuator')
     if acts:
         for act in acts:
-            act['kp'] = 100.0
-                
+            act['kp'] = 200.0
+            act['forcerange'] = '-500 500'
+
+    env = fix_assets(env, assets_dir)
+
+    bear = env.find("body", {"name": "TaiwanBear"})
+    bear["pos"]="0 0 0.5"
+    if 'quat' in bear:
+        del bear['quat']
+    bear['euler'] = "0 0 0"
+            
      # Save the merged model XML for inspection
     with open("merged_model.xml", 'w') as file:
         file.write(env.prettify())
@@ -95,6 +110,18 @@ def create_bear_walking_simulation(model_path, assets_dir = None, initial=None):
     mujoco.mj_resetDataKeyframe(model, data, 0)
 
     return model, data
+
+def fix_assets(env, assets_dir):
+    if assets_dir:
+        meshes = env.find_all('mesh', file=True)
+        for mesh in meshes:
+            mesh['file'] = str(assets_dir + '/' + mesh['file'])
+
+        textures = env.find_all('texture', file=True)
+        for tex in textures:
+            tex['file'] = str(assets_dir + '/' + tex['file'])
+
+    return env
 
 def target_trajectory(t: float, r: float, h: float, j: float, k: float, f: float) -> np.ndarray:
     """Return the (x, y) coordinates of a circle with radius r centered at (h, k)
@@ -127,7 +154,7 @@ def modify_scene(scn, target_traj, end_effector_traj):
             add_visual_capsule(scn, end_effector_traj[i], end_effector_traj[i+1], 0.005, np.array([1.0, 0, 0, 0.8]))
 
 def apply_ik_step(model, data, site_id, mocap_id):
-
+    
     # Pre-allocate numpy arrays.
     jac = np.zeros((6, model.nv))
     error = np.zeros(6)
@@ -162,17 +189,17 @@ def apply_ik_step(model, data, site_id, mocap_id):
     # Here we implement a simple version by using dq and making Jdq = -error.
     dq = np.linalg.pinv(jac) @ -error
 
-    #print(dq)
+    print(dq)
 
     # Our robot arm is position controlled, so we simple give it the target joint configure
     q = data.qpos.copy()
     # Add dq to q, here results should be the same as q = q + dq. It is different when q includes quaternian
     mujoco.mj_integratePos(model, q, dq, 1)
     
-    control = np.zeros((model.nv + 1,3))
-    control[:,0] = data.qpos
-    control[:,1] = q
-    control[:,2] = control[:,1] - control[:,0]
+    #control = np.zeros((model.nv,3))
+    #control[:,0] = data.qpos
+    #control[:,1] = q
+    #control[:,2] = control[:,1] - control[:,0]
 
     #print("Control", control)
 
@@ -184,44 +211,48 @@ def apply_ik_step(model, data, site_id, mocap_id):
     joint_names = [mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, i) for i in range(model.ngeom)]
     actuator_names = [mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_ACTUATOR, i) for i in range(model.ngeom)]
 
-    # print(model.ngeom, model.nv, model.nu, len(q))
+    print(model.ngeom, model.nv, model.nu, len(q))
     # print(len(joint_names),joint_names)
     # print(len(actuator_names), actuator_names)
 
-    x = data.ctrl.copy() # np.zeros(model.nu) # q[6:].copy()
+    #x = data.ctrl.copy() # np.zeros(model.nu) # q[6:].copy()
     #x[-1] = x[-1] - dq[-1]  
     #print("Joint ranges", model.jnt_range)
     #np.clip(x, *model.jnt_range.T, out=x)
     #data.ctrl = q[1:2]
-    print("c", error[0:3], control[-3:,:], data.ctrl[-3:])
-    data.ctrl[-1] = data.qpos[-1]
+    print("*** error", np.linalg.norm(error[:3]))
+    print(data.ctrl.shape, q.shape, data.ctrl)
+    #np.clip(q[6:], *model.jnt_range.T, out=q[6:])
+    data.ctrl[-3:] = q[-3:]
 
 def calc_mapping(model, data):
-    joint_mapping = {}
-    for i in range(model.nv):
-        joint_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, i)
-        if joint_name:
-            joint_qpos_adr = model.jnt_qposadr[i]
-            joint_qvel_adr = model.jnt_dofadr[i]
-            joint_mapping[joint_name] = (joint_qpos_adr, joint_qvel_adr)
+    #joint_mapping = {}
+    #for i in range(model.ngeom):
+    #    joint_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_JOINT, i)
+    #    if joint_name:
+    #        joint_qpos_adr = model.jnt_qposadr[i]
+    #        joint_qdof_adr = model.jnt_dofadr[i]
+    #        joint_mapping[joint_name] = (joint_qpos_adr, joint_qdof_adr)
 
     actuator_mapping = {}
-    for i in range(model.nv):
+    for i in range(model.nu):
         act_name = mujoco.mj_id2name(model, mujoco.mjtObj.mjOBJ_ACTUATOR, i)
         if act_name:
-            
-            actuator_mapping[joint_name] = (joint_qpos_adr, joint_qvel_adr)
+            jointid = model.actuator_trnid[i, 0]
+            qpos_id = model.jnt_qposadr[jointid]
+            actuator_mapping[act_name] = (i, jointid, qpos_id)
 
-    print("Joint mapping:", joint_mapping)
+    #print("Joint mapping:", joint_mapping)
     print("Actuator mapping:", actuator_mapping)
-
-    return joint_mapping, actuator_mapping
+    #map  = np.zeros(model.nv) - 1
+    
+    return actuator_mapping
 
 def run_simulation(model_path, assets_dir = None, initial=None):
     model, data = create_bear_walking_simulation(model_path, assets_dir)  
     mocap_id = model.body("Head Target").mocapid[0]
     site_id = model.site("Head Site").id
-
+    alpha = 0.3
     mapping = calc_mapping(model, data)
 
     target_traj = []
@@ -231,7 +262,7 @@ def run_simulation(model_path, assets_dir = None, initial=None):
         
         
         while viewer.is_running():
-            data.mocap_pos[mocap_id, 0:3] = target_trajectory(data.time, r=0, h=0, j=-0.7, k=0.5, f=0.05)[0:3]
+            data.mocap_pos[mocap_id, 0:3] = target_trajectory(data.time, r=0.2, h=0, j=-0.7, k=0.5, f=0.01)[0:3]
 
             apply_ik_step(model, data, site_id, mocap_id)
             mujoco.mj_step(model, data)
@@ -241,8 +272,8 @@ def run_simulation(model_path, assets_dir = None, initial=None):
             # modify_scene(viewer.renderer.scene, target_traj, end_effector_traj)
 
             viewer.sync()
-            #time.sleep(0.001)
-            break
+            #time.sleep(0.5)
+            
 
 def run_simulation_glfw(model_path, assets_dir = None, initial=None):
     model, data = create_bear_walking_simulation(model_path, assets_dir)  
@@ -301,8 +332,8 @@ def load_model(model_path, assets_dir = None, initial=None):
             mesh['file'] = str(assets_dir + '/' + mesh['file'])
 
     # Set initial attributes if provided
-    #bear_el = soup.find("body", {"name": "TaiwanBear"})
-    bear_el = soup.find("body", {"name": "root"})
+    bear_el = soup.find("body", {"name": "TaiwanBear"})
+    #bear_el = soup.find("body", {"name": "root"})
     if bear_el:
         bear_el['pos'] = "0 0 0.42"
         bear_el['euler'] = "0 0 0"
@@ -338,6 +369,6 @@ def main(argv = None):
     run_simulation(args.model, args.assets, args.initial)
     
 if __name__ == "__main__":
-    main(["--model", "./mujoco/op3.xml"])
-    #main(["--model", "../mujoco/taiwanbear.xml"])
+    #main(["--model", "./mujoco/op3.xml"])
+    main(["--model", "../mujoco/taiwanbear.xml"])
 
